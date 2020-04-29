@@ -196,4 +196,33 @@ END;
 |
 DELIMITER ;
 
+/* Creo Trigger che controlla importo delle donazioni relative ad una specifica raccolta fondi e ne determina lo stato se Aperta o Chiusa . */
+DROP TRIGGER IF EXISTS cambioStatoRF;
+DELIMITER |
+CREATE TRIGGER cambioStatoRF
+AFTER INSERT ON ADESIONE
+FOR EACH ROW
+BEGIN
+
+DECLARE somma FLOAT;
+SET somma = (
+		SELECT SUM(importoDonazione)
+        FROM ADESIONE
+        WHERE id = new.id
+);
+
+IF ( somma >= (
+	SELECT maxImporto
+    FROM RACCOLTAFONDI
+    WHERE id = new.id
+    ))
+THEN
+   
+   UPDATE RACCOLTAFONDI SET stato = 'CHIUSA' WHERE id = new.id;
+
+END IF;
+
+END;
+|
+DELIMITER ;
 
