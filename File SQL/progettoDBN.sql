@@ -11,7 +11,7 @@ USE NATURE;
 DROP TABLE IF EXISTS UTENTE ;
 CREATE TABLE UTENTE(
     nomeUtente VARCHAR(64) PRIMARY KEY,
-    tipo CHAR(1),
+    tipo ENUM('semplice','premium','amministratore') DEFAULT 'semplice',
     psw VARCHAR(32),
     email  VARCHAR(64),
 	annoNascita INT,
@@ -29,7 +29,7 @@ CREATE TABLE UTENTE(
 DROP TABLE IF EXISTS SPECIE ;
 CREATE TABLE SPECIE(
 	nomeLatino VARCHAR(64) PRIMARY KEY,
-    tipo CHAR,
+    tipo ENUM('animale','vegetale'),
     nomeItaliano VARCHAR(64),
     classe VARCHAR(64),
     annoClassif INT,
@@ -173,11 +173,27 @@ CREATE TABLE MESSAGGIO(
 /************************************************************************************************* Trigger ********************************************************************************************************/
 /* Creo Trigger che mi promuove l'utente da UTENTE SEMPLICE a UTENTE PREMIUM all'inserimento della 3 segnalazione */
 DROP TRIGGER IF EXISTS PromozioneUtente;
+DELIMITER |
 CREATE TRIGGER PromozioneUtente 
 AFTER INSERT ON SEGNALAZIONE 
 FOR EACH ROW
 BEGIN
 
+IF(EXISTS(SELECT nomeUtente
+	FROM SEGNALAZIONE
+	WHERE nomeUtente = new.nomeUtente AND
+	nomeUtente IN (SELECT nomeUtente
+		FROM UTENTE
+        WHERE tipo = 'semplice' )
+	GROUP BY nomeUtente
+    HAVING COUNT(*)>2))
+    
+THEN
+UPDATE UTENTE SET tipo='premium' WHERE nomeUtente = new.nomeUtente;    
+END IF;
+    
 END;
+|
+DELIMITER ;
 
 
