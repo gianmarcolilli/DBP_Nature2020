@@ -35,3 +35,8 @@ insert into NATURE.segnalazione (nomeUtente,dataSegnalazione,latitudineGPS,longi
 ('mike32','2020-03-20','90','75'),
 ('mike32','2020-01-20','90','75'),
 ('mike32','2020-02-20','90','75');
+
+insert into NATURE.adesione values
+('1', 'mike32', '1200', 'ok'),
+('2', 'gian32', '1200', 'ok'),
+('2', 'bobo43', '1400', 'ok');
