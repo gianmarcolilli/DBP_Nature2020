@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Login Page</title>
+  <link href="css/bootstrap.min.css"> <!-- rel="stylesheet" id="bootstrap-css"> -->
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!--Fontawesome CDN-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+  <!-- meta per dispositivi -->
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+
+</head>
+
+<!-- NAVBAR BOOTSTRAP -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+  <div class="container">
+    <b><a class="navbar-brand" href="./" style="color: MediumSeaGreen;">E-Pool </a></b>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./login.html">Accedi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./register.html">Registrati</a>
+        </li>
+      </ul>
+      <form class="form-inline">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="myarea.php">Area Utente</a>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</nav>
+<!-- FINE NAVBAR BOOTSTRAP -->
+
+
+
+<br>
+<br>
+<div class="container">
+  <p class="text-center">Effettua login, oppure <a href="/register.html">registrati</a>.</p>
+  <hr>
+  <div class="container">
+    <div class="d-flex justify-content-center h-100">
+      <div class="card">
+        <div class="card-header">
+          <h3>Sign In</h3>
+        </div>
+        <div class="card-body">
+          <form action="login.php" method="post" enctype="multipart/form-data">
+            <div class="input-group form-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+              </div>
+              <input type="text" class="form-control" placeholder="La tua email" name="email">
+
+            </div>
+            <div class="input-group form-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-key"></i></span>
+              </div>
+              <input type="password" class="form-control" placeholder="La tua password" name="psw">
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer">
+          <div class="d-flex justify-content-center links">
+            <p>Don't have an account? <a href="/register.html">Sign Up</a> </p>
+          </div>
+          <!--<div class="d-flex justify-content-center">
+            <a href="forgetpsw.php">Forgot your password?</a>
+          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+<article class="bg-secondary mb-3">
+  <div class="card-body text-center">
+    <h3 class="text-white mt-3">Alma Mater Studiorum Università di Bologna</h3>
+    <p class="h5 text-white">Progetto di Basi di Dati 2019  <br> Alberto Zini 802289 </p>   <br>
+    <!-- <p><a class="btn btn-warning" target="_blank" href="http://bootstrap-ecommerce.com/"> Bootstrap-ecommerce.com
+    <i class="fa fa-window-restore "></i></a></p> -->
+  </div>
+</article>
+
+</body>
+</html>
