@@ -227,9 +227,9 @@ END;
 DELIMITER ;
 
 /************************************************************************************************* Stored Procedure ********************************************************************************************************/
-/* Aggiungi utente semplice. */
+/* Aggiungi utente semplice*/
 DELIMITER |
-CREATE PROCEDURE AggiungiUtente(IN emailU VARCHAR(64), IN pswU VARCHAR(32), IN nomeU VARCHAR(64), IN cognomeU VARCHAR(64), IN dataU DATE, IN luogoU VARCHAR(64))
+CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN tipoU ENUM('semplice'), IN passw VARCHAR(32), IN email VARCHAR(64), IN annoNascita INT(11), IN professioneU VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
     
@@ -237,436 +237,171 @@ CREATE PROCEDURE AggiungiUtente(IN emailU VARCHAR(64), IN pswU VARCHAR(32), IN n
 	SET cont = (
 		SELECT COUNT(*)
 		FROM UTENTE
-		WHERE email = emailU
+		WHERE nomeU = nomeUtente
+        AND tipo = 'semplice'
     );
     
     IF cont < 1 THEN
-		INSERT INTO UTENTE VALUES(emailU, pswU, nomeU, cognomeU, dataU, luogoU);
-		INSERT INTO SEMPLICE VALUES(emailU);
+		INSERT INTO UTENTE(nomeUtente, tipo, psw, email, annoNascita, dataRegistrazione, professione) VALUES
+        (nomeU, tipoU, passw, email, annoNascita, CURDATE(), professioneU);
 	END IF;
     
-	END;
-|
-DELIMITER ;
-
-/* Aggiungi utente dipendente. */
-DELIMITER |
-CREATE PROCEDURE AggiungiUtenteDipendente(IN emailU VARCHAR(64), IN pswU VARCHAR(32), IN nomeU VARCHAR(64), IN cognomeU VARCHAR(64), IN dataU DATE, IN luogoU VARCHAR(64), IN nomeAziendaU VARCHAR(64), IN indirizzoAziendaU VARCHAR(64), IN telefonoU DECIMAL(10,0), IN telResponsabileU DECIMAL(10,0))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    DECLARE isExist INT DEFAULT 0;
-    
-	/* Inizializzo variabile cont e verifico se l'utente esiste già */
-	SET cont = (
-		SELECT COUNT(*)
-		FROM UTENTE
-		WHERE email = emailU
-    );
-    /* Controllo se l'azienda esiste, se no la creo */
-    SET isExist = (
-		SELECT COUNT(*)
-		FROM AZIENDA
-		WHERE nome = nomeAziendaU
-    );
-   
-    /* Se l'utente non esiste, allora faccio il controllo anche della azienda, se non esiste la creo */
-	IF cont < 1 
-	THEN
-		/* Se esiste l'azienda entro */
-     	IF isExist > 0
-		THEN
-			INSERT INTO UTENTE VALUES(emailU, pswU, nomeU, cognomeU, dataU, luogoU);
-			INSERT INTO DIPENDENTE VALUES(emailU, nomeAziendaU);
-		ELSE
-			INSERT INTO AZIENDA VALUES(nomeAziendaU, indirizzoAziendaU, telefonoU, telResponsabileU);
-			INSERT INTO UTENTE VALUES(emailU, pswU, nomeU, cognomeU, dataU, luogoU);
-			INSERT INTO DIPENDENTE VALUES(emailU, nomeAziendaU);
-		END IF;
-	END IF;
 	END;
 |
 DELIMITER ;
 
 /* Eliminazione utente. */
 DELIMITER |
-CREATE PROCEDURE EliminaUtente(IN emailUtente VARCHAR(64))
+CREATE PROCEDURE EliminaUtente(IN nomeU VARCHAR(64))
 	BEGIN
 	DELETE FROM UTENTE
-	WHERE email = emailUtente;
+	WHERE nomeU = nomeUtente;
 	END;
 |
 DELIMITER ;
 
-/* Eliminazione foto. */
+/*Inserimento segnalazione*/
 DELIMITER |
-CREATE PROCEDURE EliminaFoto(IN emailUtente VARCHAR(64), IN idFoto VARCHAR(64))
-	BEGIN
-	DELETE FROM UTENTE
-	WHERE email = emailUtente AND id = idFoto;
-	END;
-|
-DELIMITER ;
-
-/* Aggiungi foto. */
-DELIMITER |
-CREATE PROCEDURE AggiungiFoto(IN emailUtente VARCHAR(64), IN idFoto VARCHAR(64))
-	BEGIN
-	INSERT INTO FOTO VALUES (emailUtente, idFoto);
-	END;
-|
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS AggiungiPrenotazione;
-/* Aggiungi prenotazione. */
-DELIMITER |
-CREATE PROCEDURE AggiungiPrenotazione(IN dataPrenotazione DATE, IN inizio TIME, IN fine TIME, IN note VARCHAR(500), IN idTappaP NUMERIC, IN idTappaA NUMERIC, IN targa VARCHAR(10), IN idAreaP NUMERIC, IN idAreaA NUMERIC, IN emailUtente VARCHAR(64)) #, OUT msg VARCHAR(50))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    DECLARE idKm INT DEFAULT 0;
-    DECLARE idTragitto INT;
-    DECLARE checkVeicolo INT DEFAULT 0;
-    
-	/* Controllo se la prenotazione esiste. */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM PRENOTAZIONE AS P
-		WHERE data = dataPrenotazione
-        AND oraInizio = inizio
-        AND oraFine = fine
-        AND idTappaPartenza = idTappaP
-        AND idTappaArrivo = idTappaA
-        AND targaVeicolo = targa
-        AND idAreaPartenza = idAreaP
-        AND idAreaArrivo = idAreaA
-        AND stato = 'APERTA'
-    );
-    
-    /* Controllo se la vettura è disponibile. */
-    SET checkVeicolo = (
-		SELECT COUNT(*) as existVeic
-        FROM PRENOTAZIONE AS P
-        WHERE targaVeicolo = targa
-        AND oraFine < inizio
-        AND oraInizio > fine
-        AND data = dataPrenotazione
-    );
-    
-    IF checkVeicolo = 0 #Se il veicolo non è presente come orario allora entro nel ciclo
-    THEN
-		IF cont = 0 #Se la prenotazione non esiste ancora entro nel ciclo
-		THEN
-			SET idKm = FLOOR(1 + RAND()*100);
-			INSERT INTO TRAGITTO(puntoA, puntoB, numKmPrev, tipologia) VALUES
-			(idTappaP, idTappaA, idKm, 'misto');
-			# Trovo il tragitto sopra creato per aggiungerlo alla nuova prenotazione
-			SET idTragitto = (
-				SELECT id
-                FROM TRAGITTO
-                WHERE puntoA = idTappaP
-                AND puntoB = idTappaA
-                AND numKmPrev = idKm
-                AND tipologia = 'misto'
-            );
-			INSERT INTO PRENOTAZIONE(data, oraInizio, oraFine, note, idTappaPartenza, idTappaArrivo, targaVeicolo, idAreaPartenza, idAreaArrivo, emailUtente, idTragitto) VALUES 
-			(dataPrenotazione, inizio, fine, note, idTappaP, idTappaA, targa, idAreaP, idAreaA, emailUtente, idTragitto);
-		END IF;
-	#ELSE
-    #SET msg = 'Vettura gia in utilizzo in altre prenotazioni';
-    END IF;
-    
-	END;
-|
-DELIMITER ;
-
-/* Elimina prenotazione. */
-DELIMITER |
-CREATE PROCEDURE EliminaPrenotazione(IN codP TINYINT)#, OUT msg VARCHAR(50))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    
-	/* Controllo se la prenotazione esiste, ma che non sia nelle due condivisioni. */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM PRENOTAZIONE
-		WHERE cod = codP
-        AND cod NOT IN(
-			SELECT cod
-			FROM condivisionep AS P, PRENOTAZIONE AS PR
-			WHERE P.codPrenotazione = PR.cod
-			AND P.emailPremium = PR.emailUtente
-			AND P.targaVeicolo = PR.targaVeicolo
-            )
-		AND cod NOT IN(
-			SELECT cod
-			FROM condivisioned AS D, PRENOTAZIONE AS PR
-			WHERE D.codPrenotazione = PR.cod
-			AND D.emailDipendente = PR.emailUtente
-			AND D.targaVeicolo = PR.targaVeicolo
-            )
-    );
-    
-    IF cont > 0 THEN
-		DELETE FROM PRENOTAZIONE WHERE cod = codP;
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-/* Condividi prenotazioneP. */
-DELIMITER |
-CREATE PROCEDURE CondividiPrenotazioneP(IN emailP VARCHAR(64), IN emailPartecipante VARCHAR(64), IN codP TINYINT, IN idTappaPV TINYINT, IN idTappaAV TINYINT, IN spesaT DECIMAL(10,2), IN targaV VARCHAR(10))#, OUT msg VARCHAR(50))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    
-	/* Inizializzo variabile contPrenotazioni. */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM CONDIVISIONEP
-		WHERE codPrenotazione = codP
-    );
-    
-    IF cont <= 0 THEN
-		#SET msg = 'Prenotazione già condivisa!';
-	#ELSE
-		INSERT INTO CONDIVISIONEP VALUES (emailP, emailPartecipante, codP, idTappaPV, idTappaAV, spesaT, targaV);
-		#SET msg = 'Prenotazione condivisa correttamente.';
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-/* Condividi prenotazioneD. */
-DELIMITER |
-CREATE PROCEDURE CondividiPrenotazioneD(IN emailD VARCHAR(64), IN emailPartecipante VARCHAR(64), IN codP TINYINT, IN idTappaPV TINYINT, IN idTappaAV TINYINT, IN spesaT DECIMAL(10,2), IN targaV VARCHAR(10))#, OUT msg VARCHAR(50))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    
-	/* Inizializzo variabile contPrenotazioni */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM CondivisioneD
-		WHERE codPrenotazione = codP
-    );
-    
-    IF cont <= 0 THEN
-		#SET msg = 'Prenotazione già condivisa!';
-	#ELSE
-		INSERT INTO CONDIVISIONED VALUES (emailD, emailPartecipante, codP, idTappaPV, idTappaAV, spesaT, targaV);
-		#SET msg = 'Prenotazione condivisa correttamente.';
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-/* Elimina condivisioneD. */
-DELIMITER |
-CREATE PROCEDURE EliminaCondivisioneD(IN codP TINYINT)
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    
-	/* Inizializzo variabile contPrenotazioni */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM CONDIVISIONED
-		WHERE codPrenotazione = codP
-    );
-    
-    IF cont > 0 THEN
-		DELETE FROM CONDIVISIONED WHERE codPrenotazione = codP;
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-/* Elimina condivisioneP. */
-DELIMITER |
-CREATE PROCEDURE EliminaCondivisioneP(IN codP TINYINT)
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    
-	/* Inizializzo variabile contPrenotazioni */
-	SET cont = (
-		SELECT COUNT(*) AS existPren
-		FROM CONDIVISIONEP
-		WHERE codPrenotazione = codP
-    );
-    
-    IF cont > 0 THEN
-		DELETE FROM CONDIVISIONEP WHERE codPrenotazione = codP;
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-
-/* Elimina partecipazione. */
-DELIMITER |
-CREATE PROCEDURE EliminaPartecipazione(IN codP TINYINT, IN emailP VARCHAR(64))
-	BEGIN
-    DECLARE cont1 INT DEFAULT 0;
-    DECLARE cont2 INT DEFAULT 0;
-    
-	/* Inizializzo variabile contPrenotazioni */
-	SET cont1 = (
-		SELECT COUNT(*) AS existPren
-		FROM CONDIVISIONED AS D
-		WHERE D.codPrenotazione = codP
-    );
-    
-	/* Inizializzo variabile contPrenotazioni */
-	SET cont2 = (
-		SELECT COUNT(*) AS existPren
-		FROM CONDIVISIONEP AS P
-		WHERE P.codPrenotazione = codP
-    );
-    
-    IF cont1 > 0 THEN
-		DELETE
-        FROM CONDIVISIONED
-        WHERE codPrenotazione = codP
-        AND emailPartecipante = emailP;
-	END IF;
-    
-    IF cont2 > 0 THEN
-		DELETE
-        FROM CONDIVISIONEP
-        WHERE codPrenotazione = codP
-        AND emailPartecipante = emailP;
-	END IF;
-    
-	END;
-|
-DELIMITER ;
-
-
-/* Agguiungi una valutazione utente. */
-DELIMITER |
-CREATE PROCEDURE AggiungiValutazione(IN dataV DATE, IN testoV VARCHAR(500), IN votoV TINYINT(4), IN idTragittoV TINYINT(4), IN emailPremiumV VARCHAR(64), IN emailUtenteV VARCHAR(64))
-	BEGIN
-		INSERT INTO VALUTAZIONE(data, testo, voto, idTragitto, emailPremium, emailUtente) VALUES (dataV, testoV, votoV, idTragittoV, emailPremiumV, emailUtenteV);
-	END
-|
-DELIMITER ;
-
-/* Agguiungi una condivisione Premium. */
-DELIMITER |
-CREATE PROCEDURE AggiungiCondivisioneP(IN emailPartecipante VARCHAR(64), IN codP TINYINT, IN idTappaPV TINYINT, IN idTappaAV TINYINT, IN spesaT DECIMAL(10,2), IN targaV VARCHAR(10))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    DECLARE emailCondivisore VARCHAR(64);
-    
-		/* Controllo se la prenotazione esiste ed è aperta. */
-    	SET cont = (
-			SELECT COUNT(*) AS existPren
-			FROM PRENOTAZIONE
-			WHERE cod = codP
-			AND stato = 'APERTA'
-    );
-    
-    IF cont = 1
-    THEN
-		/* Controllo chi ha condiviso la prenotazione. */
-		SET emailCondivisore = (
-			SELECT emailUtente
-			FROM PRENOTAZIONE
-			WHERE cod = codP
-		);
-        
-		IF emailCondivisore <> emailPartecipante 
-		THEN
-			INSERT INTO CONDIVISIONEP VALUES (emailCondivisore, emailPartecipante, codP, idTappaPV, idTappaAV, spesaT, targaV);
-		END IF;
-    END IF;
-	END;
-|
-DELIMITER ;
-
-/* Agguiungi una condivisione Dipendente. */
-DELIMITER |
-CREATE PROCEDURE AggiungiCondivisioneD(IN emailPartecipante VARCHAR(64), IN codP TINYINT, IN idTappaPV TINYINT, IN idTappaAV TINYINT, IN spesaT DECIMAL(10,2), IN targaV VARCHAR(10))
-	BEGIN
-    DECLARE cont INT DEFAULT 0;
-    DECLARE emailCondivisore VARCHAR(64);
-    
-		/* Controllo se la prenotazione esiste ed è aperta. */
-    	SET cont = (
-			SELECT COUNT(*) AS existPren
-			FROM PRENOTAZIONE
-			WHERE cod = codP
-            AND stato = 'APERTA'
-    );
-    
-    IF cont = 1 THEN
-		/* Controllo chi ha condiviso la prenotazione. */
-		SET emailCondivisore = (
-			SELECT emailUtente
-			FROM PRENOTAZIONE
-			WHERE cod = codP
-		);
-        
-		IF emailCondivisore <> emailPartecipante THEN
-			INSERT INTO CONDIVISIONED VALUES (emailCondivisore, emailPartecipante, codP, idTappaPV, idTappaAV, spesaT, targaV);
-		END IF;
-    END IF;
-	END;
-|
-DELIMITER ;
-
-/* Agguiungi una segnalazione UTENTE. */
-DELIMITER |
-CREATE PROCEDURE AggiungiSegnalazioneU(IN titoloU VARCHAR(64), IN testoU VARCHAR(500), IN emailUtenteU VARCHAR(64), IN targaU VARCHAR(10))
+CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(11), IN longitudineS INT(11))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
     
     /* Controllo se la segnalazione esiste già. */
     	SET cont = (
-			SELECT COUNT(*) AS existSegn
+			SELECT COUNT(*) AS existsSegn
 			FROM SEGNALAZIONE
-			WHERE titolo = titoloU
-            AND testo = testoU
-            AND emailUtente = emailUtenteU
-            AND targaVeicolo = targaU
+			WHERE nomeU = nomeUtente
+            AND latitudineS = latitudine
+            AND longitudineS = longitudine
     );
     
-    IF cont = 0
+    IF cont < 1
     THEN
-		INSERT INTO SEGNALAZIONE(data, titolo, testo, emailUtente, targaVeicolo) VALUES
-        (CURDATE(), titoloU, testoU, emailUtenteU, targaU);
+		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudine, longitudine) VALUES
+        (nomeU, CURDATE(), latitudineS, longitudineS);
     END IF;
     
 	END;
 |
 DELIMITER ;
 
-
-/* Agguiungi una segnalazione SOCIETA'. */
 DELIMITER |
-CREATE PROCEDURE AggiungiSegnalazioneS(IN titoloS VARCHAR(64), IN testoS VARCHAR(500), IN nomeSocietaS VARCHAR(64), IN targaS VARCHAR(10))
-	BEGIN
+CREATE PROCEDURE AggiungiPropostaS(IN idSegnalazione TINYINT(4), IN nomeU VARCHAR(64),IN commento VARCHAR(500))
+	BEGIN 
     DECLARE cont INT DEFAULT 0;
     
-    /* Controllo se la segnalazione esiste già. */
-    	SET cont = (
-			SELECT COUNT(*) AS existSegn
-			FROM SEGNALAZIONE
-			WHERE titolo = titoloS
-            AND testo = testoS
-            AND emailUtente = nomeSocietaS
-            AND targaVeicolo = targaS
-    );
-    
-    IF cont = 0
-    THEN
-		INSERT INTO SEGNALAZIONE(data, titolo, testo, nomeSocieta, targaVeicolo) VALUES
-        (CURDATE(), titoloS, testoS, nomeSocietaS, targaS);
-    END IF;
-    
-	END;
+    /*Controllo se la proposta è stata già inserita.*/
+		SET cont = (
+			SELECT count(*) AS existsProp
+            FROM PROPOSTA 
+            WHERE idSegnalazione = id2
+            AND nomeU = nomeUtente
+		);
+		
+        IF cont = 0
+        THEN 
+			INSERT INTO PROPOSTA (id2, nomeUtente, commento, dataProposta) VALUES
+            (idSegnalazione, nomeU, commento, CURDATE());
+		END IF;
+        
+    END;
 |
 DELIMITER ;
 
+
+/*Inserimento messaggio*/
+DELIMITER |
+CREATE PROCEDURE condividiMessaggio(IN mittente VARCHAR(64), IN destinatario VARCHAR(64),IN titolo VARCHAR(32),IN testo VARCHAR(500))
+	
+    BEGIN
+		INSERT INTO MESSAGGIO(nomeUenteMittente, nomeUtenteDestinatario, titolo, testo, tstamp ) VALUES
+        (mittente, destinatario, titolo, testo, TIMESTAMP(CURDATE()));
+    END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE adesioneEscursione(IN nomeU VARCHAR(64), IN idEscursione TINYINT(4))
+    BEGIN
+    DECLARE cont INT DEFAULT 0;
+    /*Controllo se partecipazione già presente*/
+		SET cont = (
+			SELECT COUNT(*) AS existsPart
+            FROM PARTECIPATO
+            WHERE nomeU = nomeUtente 
+            AND idEscursione = id);
+		
+        IF cont < 1
+        THEN INSERT INTO PARTECIPATO(nomeUtente, id) VALUES
+        (nomeU, idEscursione);
+        END IF;
+        
+    END;
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importoD FLOAT, IN noteD VARCHAR(250))
+	
+    BEGIN
+    DECLARE cont INT DEFAULT 0;
+    /*Controllo se adesione già presente*/
+		SET cont = (
+			SELECT count(*)
+            FROM ADESIONE, RACCOLTAFONDI
+            WHERE nomeU = ADESIONE.nomeUtente 
+            AND idRF = ADESIONE.id
+            AND RACCOLTAFONDI.tipo = 'APERTA');
+            
+        IF cont = 0 
+        THEN INSERT INTO ADESIONE(nomeUtente, id, importoD, noteD) VALUES
+        (nomeU, idRF, importoD, noteD);
+        END IF;
+    END;
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE inserisciEscursione(IN idE TINYINT(4), IN titoloE VARCHAR(32),IN startE TIME, IN returnE TIME, IN note VARCHAR(500), IN maxP INT(11))
+/* Creo Escursione*/
+	BEGIN
+		INSERT INTO ESCURSIONE(id, titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti)
+        VALUES(idE, titoloE, CURDATE(), startE, returnE, note, maxP);
+    END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+/*Inserimento specie floristica*/
+	BEGIN
+    DECLARE  cont INT DEFAULT 0;
+    
+		SET  cont = (
+        SELECT count(*) AS existsSpecie
+        FROM SPECIE
+        WHERE tipo = 'vegetale'
+        AND latino = nomeLatino;
+	
+    IF cont = 0 
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, )
+    VALUE (latino, tipoS, italiano, class, annoC,)
+        )
+    END;
+
+|
+DELIMITER ;
+
+/*SCHELETRO PROCEDURE
+DELIMITER |
+CREATE PROCEDURE nomeProcedura()
+	BEGIN
+    
+    
+    END;
+
+|
+DELIMITER ;
+*/
