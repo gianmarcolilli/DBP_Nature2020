@@ -229,7 +229,7 @@ DELIMITER ;
 /************************************************************************************************* Stored Procedure ********************************************************************************************************/
 /* Aggiungi utente semplice*/
 DELIMITER |
-CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN tipoU ENUM('semplice'), IN passw VARCHAR(32), IN email VARCHAR(64), IN annoNascita INT(11), IN professioneU VARCHAR(64))
+CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN passw VARCHAR(32), IN eaddress VARCHAR(64), IN birthdate INT, IN professioneU VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
     
@@ -243,7 +243,7 @@ CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN tipoU ENUM('semplice'),
     
     IF cont < 1 THEN
 		INSERT INTO UTENTE(nomeUtente, tipo, psw, email, annoNascita, dataRegistrazione, professione) VALUES
-        (nomeU, tipoU, passw, email, annoNascita, CURDATE(), professioneU);
+        (nomeU, 'semplice', passw, eaddress, birthdate, CURDATE(), professioneU);
 	END IF;
     
 	END;
@@ -377,23 +377,124 @@ DELIMITER |
 CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
 /*Inserimento specie floristica*/
 	BEGIN
+    
     DECLARE  cont INT DEFAULT 0;
     
 		SET  cont = (
         SELECT count(*) AS existsSpecie
         FROM SPECIE
         WHERE tipo = 'vegetale'
-        AND latino = nomeLatino;
+        AND latino = nomeLatino);
 	
     IF cont = 0 
-    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, )
-    VALUE (latino, tipoS, italiano, class, annoC,)
-        )
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole);
+    END IF;
+    
     END;
 
 |
 DELIMITER ;
 
+DELIMITER |
+CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+/*Inserimento specie floristica*/
+	BEGIN
+    
+    DECLARE  cont INT DEFAULT 0;
+    
+		SET  cont = (
+        SELECT count(*) AS existsSpecie
+        FROM SPECIE
+        WHERE tipo = 'animale'
+        AND latino = nomeLatino);
+	
+    IF cont = 0 
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole);
+    END IF;
+    
+    END;
+    
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE inserisciHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
+	BEGIN
+    
+    DECLARE cont INT DEFAULT 0;
+
+		SET  cont = (
+        SELECT count(*) AS existsHabitat
+        FROM HABITAT
+        WHERE  idH = id);
+    
+    IF cont = 0 
+    THEN  INSERT INTO HABITAT(id, descrizione)
+    VALUE (idH, descrizione);
+    END IF;        
+    
+    END;
+    
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+	BEGIN
+    
+    IF EXISTS(SELECT *
+						FROM SPECIE
+                        WHERE latino = nomeLatino)
+    THEN UPDATE SPECIE
+    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, old.wikiLink = wikiLink, cmAltezza = altezza, cmDiametro = diametro, peso = wheight, mediaProle = prole
+    WHERE latino = nomeLatino;
+    END IF;
+   
+   END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE updateHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
+	BEGIN
+    
+    IF EXISTS(SELECT *
+						FROM HABITAT
+                        WHERE id = idH)
+    THEN UPDATE HABITAT
+    SET old.descrizione = descrizione
+    WHERE id = idH;
+    END IF;
+   
+   END;
+
+|
+DELIMITER ;
+
+
+DELIMITER |
+CREATE PROCEDURE inserisciRF(IN idPR TINYINT(4), IN descrizione VARCHAR(500), IN maxImporto FLOAT)
+	BEGIN
+    
+    DECLARE cont INT DEFAULT 0;
+
+		SET  cont = (
+        SELECT count(*) AS existsRaccolta
+        FROM RACCOLTAFONDI
+        WHERE  idPR = id2);
+    
+    IF cont = 0 
+    THEN  INSERT INTO RACCOLTAFONDI(id2, inizio, descrizione, maxImporto)
+    VALUE (idPR, CURDATE(), descrizione, maxImporto);
+    END IF;        
+    
+    END;
+    
+|
+DELIMITER ;
 /*SCHELETRO PROCEDURE
 DELIMITER |
 CREATE PROCEDURE nomeProcedura()

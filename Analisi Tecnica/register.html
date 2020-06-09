@@ -13,7 +13,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
 </head>
 <body>
-  <!-- ---- Include the above in your HEAD tag ---------->
+  <!------ Include the above in your HEAD tag ---------->
 
   <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"> -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -24,7 +24,7 @@
   <!-- NAVBAR BOOTSTRAP -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
     <div class="container">
-      <b><a class="navbar-brand" href="/index.php" style="color: MediumSeaGreen;">E-Pool </a></b>
+      <b><a class="navbar-brand" href="/index.php" style="color: MediumSeaGreen;">Nature </a></b>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -74,14 +74,9 @@
               <!-- NOME -->
               <div class="form-row">
                 <div class="col form-group">
-                  <label>First name </label>
-                  <input type="text" class="form-control" placeholder="Inserisci il tuo nome" name="nome">
+                  <label>Username </label>
+                  <input type="text" class="form-control" placeholder="Inserisci nome utente" name="username">
                   <span class="error"><?php echo $nomeErr;?></span>
-                </div> <!-- form-group end.// -->
-                <div class="col form-group">
-                  <label>Last name</label>
-                  <input type="text" class="form-control" placeholder="Inserisci il tuo cognome" name="cognome">
-                  <span class="error"><?php echo $cognomeErr;?></span>
                 </div> <!-- form-group end.// -->
               </div> <!-- form-row end.// -->
               <div class="form-group">
@@ -90,44 +85,15 @@
                 <span class="error"><?php echo $emailErr;?></span></div> <!-- form-group end.// -->
 
 
-
-
-                <div class="form-row">
-                  <small class="form-text text-muted"><strong>N.B</strong>: Inserisci i dati della tua azienda per essere registrato come utente <strong>dipendente</strong>.</small>
-                    <div class="col form-group">
-                    <label style="color: red;">Company name*</label>
-                    <input type="text" class="form-control" placeholder="Inserisci il nome dell'azienda" name="azienda">
-
-                  </div>
-                  <div class="col form-group">
-                    <label style="color: red;">Company address*</label>
-                    <input type="text" class="form-control" placeholder="Inserisci la via dell'azienda" name="address">
-                  </div>
-                </div>
-
-                <div class="form-row">
-                  <div class="col form-group">
-                    <label style="color: red;">Phone number*</label>
-                    <input type="text" class="form-control" placeholder="Inserisci il numero aziendale" name="tel">
-
-                  </div> <!-- form-group end.// -->
-                  <div class="col form-group">
-                    <label style="color: red;">Phone boss*</label>
-                    <input type="text" class="form-control" placeholder="Inserisci il numero del responsabile" name="telResp">
-                  </div> <!-- form-group end.// -->
-                </div> <!-- form-row end.// -->
-
-
-
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label>City</label>
-                    <input type="text" class="form-control" placeholder="Citta' di nascita" name="luogo">
+                    <label>Profession</label>
+                    <input type="text" class="form-control" placeholder="Inserire professione" name="professione">
                     <span class="error"><?php echo $luogoErr;?></span>
                   </div> <!-- form-group end.// -->
                   <div class="form-group col-md-6">
-                    <label>Date</label>
-                    <input type="date" class="form-control" name="data">
+                    <label>Birthdate</label>
+                    <input type="text" pattern="[0-9]" class="form-control" name="birthdate" placeholder="Inserire anno di nascita">
                     <span class="error"><?php echo $dataErr;?></span>
                   </div> <!-- form-row.// -->
                   <div class="form-group col-md-6">
@@ -154,17 +120,6 @@
 
 
       </div>
-      <!--container end.//-->
-
-      <br><br>
-      <article class="bg-secondary mb-3">
-        <div class="card-body text-center">
-          <h3 class="text-white mt-3">Alma Mater Studiorum Università di Bologna</h3>
-          <p class="h5 text-white">Progetto di Basi di Dati 2019  <br> Alberto Zini 802289 </p>   <br>
-          <!-- <p><a class="btn btn-warning" target="_blank" href="http://bootstrap-ecommerce.com/"> Bootstrap-ecommerce.com
-          <i class="fa fa-window-restore "></i></a></p> -->
-        </div>
-      </article>
 
     </body>
     </html>
