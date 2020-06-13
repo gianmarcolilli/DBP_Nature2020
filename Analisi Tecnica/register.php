@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
+
 <head>
+
   <meta charset="utf-8">
-  <title>Nature HomePage</title>
-  <!-- CDN Bootstrap e style.css personalizzato -->
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css">
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.bundle.js"></script>
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <!-- meta per dispositivi -->
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Progetto Basi di Dati 2020</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <!-- Custom styles for this template -->
+  <link href="css/landing-page.min.css" rel="stylesheet">
+
+  <?php
+    session_start();
+    include("mysql.php");
+    include("userLevel.php");
+  ?>
 </head>
 
-<?php
-session_start();
-include ("mysql.php");
-include ("userLevel.php"); //Che livello di utente sei
-?>
 
 <body>
 
   <!-- NAVBAR BOOTSTRAP -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <b><a class="navbar-brand" href="/index.php" style="color: MediumSeaGreen;">Nature </a></b>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <a class="navbar-brand" href="./index.php">Home</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
@@ -169,12 +171,12 @@ include ("userLevel.php"); //Che livello di utente sei
           echo "<br>New record created successfully.";
           require 'mongoDBconn.php';
           $_SESSION['email']=$email;
-          $_SESSION['psw']=$psw; 
+          $_SESSION['psw']=$psw;
         } else {
           echo "\nError: " . $sql . "<br>" . $conn->error;
         }
         $conn->close();
-        header("refresh:3;url=./index.php");
+        //header("refresh:3;url=./index.php");
       } else {
         echo "Try again, list of errors:";
         if(!empty($emailErr))
@@ -189,7 +191,7 @@ include ("userLevel.php"); //Che livello di utente sei
         echo "<br>" . $dataErr;
         if(!empty($professionErr))
         echo "<br>" . $professionErr;
-        header("refresh:3;url=./register.html");
+        //header("refresh:3;url=./register.html");
       }
       ?>
 

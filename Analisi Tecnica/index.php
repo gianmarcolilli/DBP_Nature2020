@@ -22,9 +22,9 @@
   <link href="css/landing-page.min.css" rel="stylesheet">
 
   <?php
-  session_start();
-  include("mysql.php");
-  include("userLevel.php");
+    session_start();
+    include("mysql.php");
+    include("userLevel.php");
   ?>
 </head>
 
@@ -33,8 +33,8 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Progetto Basi di Dati 2020</a>
-      <a class="btn btn-primary" href="#">Sign In</a>
+      <a class="navbar-brand" href=".">Progetto Basi di Dati 2020</a>
+      <a class="btn btn-primary" href="register.html">Sign In</a>
     </div>
   </nav>
 
