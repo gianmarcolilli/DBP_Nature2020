@@ -1,8 +1,17 @@
 <?php
+
+/* Gian settings
 $servername = "localhost:8889";
 $username = "root";
 $password = "root";
 $dbname = "NATURE";
+*/
+
+/* General settings */
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "nature";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -11,6 +20,8 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-//echo "Connected successfully<br><br>";
+/* Test connection if works.
+echo "Connected successfully<br><br>";
+*/
 
 ?>
