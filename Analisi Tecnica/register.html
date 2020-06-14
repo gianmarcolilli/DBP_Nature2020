@@ -99,7 +99,7 @@
                   </div> <!-- form-group end.// -->
                   <div class="form-group col-md-6">
                     <label>Birthdate</label>
-                    <input type="date" class="form-control" name="birthdate" placeholder="Inserire anno di nascita">
+                    <input type="text" pattern="[0-9]" maxlength="4" class="form-control" name="birthdate" placeholder="Inserire anno di nascita">
                     <span class="error"><?php echo $dataErr;?></span>
                   </div> <!-- form-row.// -->
                   <div class="form-group col-md-6">
