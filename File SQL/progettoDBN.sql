@@ -231,7 +231,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS AggiungiUtente;
 /* Aggiungi utente semplice*/
 DELIMITER |
-CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN passw VARCHAR(32), IN eaddress VARCHAR(64), IN birthdate DATE, IN professioneU VARCHAR(64))
+CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN passw VARCHAR(32), IN eaddress VARCHAR(64), IN birthdate int, IN professioneU VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
     
