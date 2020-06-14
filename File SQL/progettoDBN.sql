@@ -13,7 +13,7 @@ CREATE TABLE UTENTE(
     nomeUtente VARCHAR(64) PRIMARY KEY,
     tipo ENUM('semplice','premium','amministratore') DEFAULT 'semplice',
     psw VARCHAR(32),
-    email  VARCHAR(64),
+    email VARCHAR(64),
 	annoNascita INT,
     dataRegistrazione DATE,
     professione VARCHAR(64),

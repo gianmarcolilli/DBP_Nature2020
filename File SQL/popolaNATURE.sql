@@ -4,11 +4,11 @@ insert into NATURE.raccoltafondi (inizio,descrizione,maxImporto) values
 ('2006-11-23','questa raccolta è per te','2500'),
 ('2020-11-21','questa raccolta è per i bambini','30000');
 
-insert into NATURE.utente (nomeUtente, psw, email, annoNascita, dataRegistrazione, professione, classifCorrette, classifNonCorrette, classifTotali, affidabilita, contatore ) values 
-('mike32','dfsvfrbveg56','mike32@gmail.com','1985','2018-03-21','avvocato','2','3','5','2','1'),
-('giovanni3','gio324qw','giovannitremari@gmail.com','1994','2020-03-23','studente','1','3','4','2','1'),
-('gian32','gio324qw','gianroma@gmail.com','1993','2020-03-23','studente','1','3','4','2','1'),
-('bobo43','dsevni76','bobo43@gmail.com','1987','2019-03-12','operaio','1','3','4','2','1');
+insert into NATURE.utente (nomeUtente, tipo, psw, email, annoNascita, dataRegistrazione, professione, classifCorrette, classifNonCorrette, classifTotali, affidabilita, contatore ) values 
+('mike32', 'semplice', 'dfsvfrbveg56','mike32@gmail.com','1985','2018-03-21','avvocato','2','3','5','2','1'),
+('giovanni3', 'premium', 'gio324qw','giovannitremari@gmail.com','1994','2020-03-23','studente','1','3','4','2','1'),
+('gian', 'amministratore', 'g','gianroma@gmail.com','1993','2020-03-23','studente','1','3','4','2','1'),
+('bobo43', 'amministratore', 'dsevni76','bobo43@gmail.com','1987','2019-03-12','operaio','1','3','4','2','1');
 
 insert into NATURE.specie values
 ('ibiscus','vegetale','iris','2','1932','50','www.wikipedia/iris.it','43','12','21','2.3'),
@@ -38,5 +38,5 @@ insert into NATURE.segnalazione (nomeUtente,dataSegnalazione,latitudineGPS,longi
 
 insert into NATURE.adesione values
 ('1', 'mike32', '1200', 'ok'),
-('2', 'gian32', '1200', 'ok'),
+('2', 'gian', '1200', 'ok'),
 ('2', 'bobo43', '1400', 'ok');

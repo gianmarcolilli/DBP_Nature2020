@@ -31,76 +31,66 @@
 
 <body>
 
-  <!-- NAVBAR BOOTSTRAP -->
-  <nav class="navbar navbar-light bg-light static-top">
-    <div class="container">
-      <a class="navbar-brand" href="./index.php">Home</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+  <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" href="#">Nature</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item active">
-            <a class="nav-link" href="./">Home<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
-          <?php
-          if (!isset($_SESSION['email']) && (empty($_SESSION['email']))) {
-            ?>
-            <li class="nav-item">
-              <a class="nav-link" href="./login.html">Accedi</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./register.html">Registrati</a>
-            </li>
-            <?php
-          }
-          ?>
         </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
+          <?php
+          if (isset($_SESSION['email']) && (!empty($_SESSION['email']))) {
+          ?>
 
-        <form class="form-inline">
-          <ul class="navbar-nav mr-auto">
-
-            <?php
-            if (isset($_SESSION['email']) && (!empty($_SESSION['email']))) {
-              ?>
-
-              <li class="nav-item">
-                <span class="nav-link" style="color: rgba(255, 255, 255, 0.5);">Benvenuto,
-                  <?php
-                  $nome = "";
-                  $sql=$conn->query("
-                  SELECT nome
-                  FROM UTENTE
-                  WHERE email = '{$_SESSION['email']}'
-                  ");
-                  unset($nome);
-                  while ($row = $sql->fetch_assoc()) {
-                    $nome = $row['nome'];
-                  }
-                  echo $nome."!";
-                  ?>
-                </span>
-              </li>
-              <li class="nav-item">
-                <a href="logout.php" class="nav-link" style="color: rgba(255, 255, 255, 0.5);">Logout<a>
-                  <?php
+            <li class="nav-item">
+              <span class="nav-link">Benvenuto,
+                <?php
+                $nome = "";
+                $sql=$conn->query("SELECT nomeUtente
+                                    FROM UTENTE
+                                    WHERE email = '{$_SESSION['email']}'
+                                  ");
+                unset($nome);
+                while ($row = $sql->fetch_assoc()) {
+                  $nome = $row['nomeUtente'];
                 }
+                echo $nome."!";
                 ?>
+              </span>
+            </li>
+            <?php } ?>
+            <li class="nav-item">
+              <?php
+              if (isset($_SESSION['email']) && (!empty($_SESSION['email']))) {
+                ?>
+                <a class="nav-link" href="./logout.php">Logout</a>
+              <?php } ?>
+            </li>
+            <?php
+            if (!isset($_SESSION['email']) && (empty($_SESSION['email']))) {
+              ?>
+              <li class="nav-item">
+                <a class="nav-link" href="./login.html">Login</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="myarea.php">Area Utente</a>
+                <a class="nav-link" href="./register.html">Sign In</a>
               </li>
-            </ul>
-          </form>
-        </div>
+            <?php } ?>
+          </ul>
+        </form>
       </div>
-    </nav>
-    <!-- FINE NAVBAR BOOTSTRAP -->
+    </nav> <!-- FINE NAVBAR -->
 
-
-
-    <br><br><br>
+    <br>
     <div class="container">
-
-
 
       <?php
 
@@ -117,7 +107,7 @@
       $contConvalida = 0;
 
 
-        if (empty($username) || $nome == "username") {
+        if (empty($username) || $username == "username") {
           $nomeErr = "Name is required";
         } else {
           $contConvalida++;
@@ -163,20 +153,19 @@
 
         }
 
-
       if($contConvalida == 6){
           echo "\n Benvenuto sarai registrato come utente semplice";
           $sql = "CALL AggiungiUtente('$username', '$psw', '$email', '$birthdate', '$professione')";
         if ($conn->query($sql) === TRUE) {
           echo "<br>New record created successfully.";
-          require 'mongoDBconn.php';
+          //require 'mongoDBconn.php';
           $_SESSION['email']=$email;
           $_SESSION['psw']=$psw;
         } else {
           echo "\nError: " . $sql . "<br>" . $conn->error;
         }
         $conn->close();
-        //header("refresh:3;url=./index.php");
+        header("refresh:3;url=./index.php");
       } else {
         echo "Try again, list of errors:";
         if(!empty($emailErr))
@@ -191,14 +180,12 @@
         echo "<br>" . $dataErr;
         if(!empty($professionErr))
         echo "<br>" . $professionErr;
-        //header("refresh:3;url=./register.html");
+        header("refresh:3;url=./register.html");
       }
       ?>
-
 
     </div>
     <br><br>
 
-
   </body>
-  </html>
+</html>
