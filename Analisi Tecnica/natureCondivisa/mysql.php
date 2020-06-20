@@ -1,16 +1,16 @@
 <?php
 
-/* Gian settings */
-$servername = "localhost";
+/* Gian settings
+$servername = "localhost:8889";
 $username = "root";
 $password = "root";
-$dbname = "nature";
+$dbname = "NATURE"; */
 
-/* General settings
+/* General settings */
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "nature"; */
+$dbname = "nature";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -24,4 +24,3 @@ echo "Connected successfully<br><br>";
 */
 
 ?>
-

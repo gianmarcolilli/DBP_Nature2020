@@ -34,13 +34,13 @@
           <a class="navbar-brand">Nature</a>
           <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="/nature/index.php">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="./index.php">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="#">Area utente <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="./myarea.php">Area utente <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="#">Messaggi <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="./chat.php">Messaggi <span class="sr-only">(current)</span></a>
             </li>
           </ul>
         </nav>
