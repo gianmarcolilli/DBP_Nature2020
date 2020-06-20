@@ -25,6 +25,15 @@ CREATE TABLE UTENTE(
     contatore INT
 )engine = InnoDB;
 
+
+/* Creazione pulita della tabella HABITAT */
+DROP TABLE IF EXISTS HABITAT;
+CREATE TABLE HABITAT(
+	nome VARCHAR(64) PRIMARY KEY,
+    descrizione VARCHAR(500) 
+)engine = InnoDB;
+
+
 /* Creazione pulita della tabella  SPECIE*/
 DROP TABLE IF EXISTS SPECIE ;
 CREATE TABLE SPECIE(
@@ -38,24 +47,19 @@ CREATE TABLE SPECIE(
     cmAltezza INT,
     cmDiametro INT, 
     peso FLOAT,
-    mediaProle FLOAT
-)engine = InnoDB;
-
-/* Creazione pulita della tabella HABITAT */
-DROP TABLE IF EXISTS HABITAT;
-CREATE TABLE HABITAT(
-	id TINYINT PRIMARY KEY AUTO_INCREMENT,
-    descrizione VARCHAR(500)
+    mediaProle FLOAT,
+    nomeHabitat VARCHAR(64),
+    FOREIGN KEY(nomeHabitat) REFERENCES HABITAT(nome) ON DELETE CASCADE ON UPDATE CASCADE
 )engine = InnoDB;
 
 /* Creazione pulita della tabella OSPITATA */
 DROP TABLE IF EXISTS OSPITATA;
 CREATE TABLE OSPITATA(
 	nomeLatino VARCHAR(64),
-    id TINYINT,
-    PRIMARY KEY(nomeLatino, id),
+    nomeH VARCHAR(64),
+    PRIMARY KEY(nomeLatino, nomeH),
     FOREIGN KEY(nomeLatino) REFERENCES SPECIE(nomeLatino) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY(id) REFERENCES HABITAT(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY(nomeH) REFERENCES HABITAT(nome) ON DELETE CASCADE ON UPDATE CASCADE
 )engine = InnoDB;
 
 /* Creazione pulita della tabella  SEGNALAZIONE*/
@@ -66,7 +70,7 @@ CREATE TABLE SEGNALAZIONE(
     dataSegnalazione DATE,
     latitudineGPS INT,
     longitudineGPS INT,
-    FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente)
+    FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE CASCADE
     #FOTO
 )engine = InnoDB;
 
@@ -96,11 +100,11 @@ CREATE TABLE GESTIONES(
 /* Creazione pulita della tabella GESTIONEH */
 DROP TABLE IF EXISTS GESTIONEH;
 CREATE TABLE GESTIONEH(
-	id TINYINT,
+	nomeH VARCHAR(64),
     nomeUtente VARCHAR(64),
     tipoOperazione VARCHAR (16) NOT NULL,
-    PRIMARY KEY(id, nomeUtente),
-    FOREIGN KEY (id) REFERENCES HABITAT(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    PRIMARY KEY(nomeH, nomeUtente),
+    FOREIGN KEY (nomeH) REFERENCES HABITAT(nome) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE NO ACTION ON UPDATE NO ACTION
 )engine = InnoDB;
 
@@ -279,7 +283,7 @@ CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(
     
     IF cont < 1
     THEN
-		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudine, longitudine) VALUES
+		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudineGPS, longitudineGPS) VALUES
         (nomeU, CURDATE(), latitudineS, longitudineS);
     END IF;
     
@@ -376,7 +380,7 @@ CREATE PROCEDURE inserisciEscursione(IN idE TINYINT(4), IN titoloE VARCHAR(32),I
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT, IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
     
@@ -389,8 +393,8 @@ CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM(
         AND latino = nomeLatino);
 	
     IF cont = 0 
-    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle)
-    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole);
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, nomeHabitat)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole, nomeH);
     END IF;
     
     END;
@@ -399,7 +403,7 @@ CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM(
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
     
@@ -412,8 +416,8 @@ CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM(
         AND latino = nomeLatino);
 	
     IF cont = 0 
-    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle)
-    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole);
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, nomeHabitat)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole, nomeH);
     END IF;
     
     END;
@@ -422,7 +426,7 @@ CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM(
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
+CREATE PROCEDURE inserisciHabitat(IN nomeH VARCHAR(64), IN descrizioneH VARCHAR(500))
 	BEGIN
     
     DECLARE cont INT DEFAULT 0;
@@ -430,11 +434,11 @@ CREATE PROCEDURE inserisciHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
 		SET  cont = (
         SELECT count(*) AS existsHabitat
         FROM HABITAT
-        WHERE  idH = id);
+        WHERE  nomeH = nome);
     
     IF cont = 0 
-    THEN  INSERT INTO HABITAT(id, descrizione)
-    VALUE (idH, descrizione);
+    THEN  INSERT INTO HABITAT(nome, descrizione)
+    VALUE (nomeH, descrizioneH);
     END IF;        
     
     END;
@@ -443,14 +447,14 @@ CREATE PROCEDURE inserisciHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT)
+CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wiki VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 	BEGIN
     
     IF EXISTS(SELECT *
 						FROM SPECIE
                         WHERE latino = nomeLatino)
     THEN UPDATE SPECIE
-    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, old.wikiLink = wikiLink, cmAltezza = altezza, cmDiametro = diametro, peso = wheight, mediaProle = prole
+    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = wheight, mediaProle = prole, nomeHabitat = nomeH
     WHERE latino = nomeLatino;
     END IF;
    

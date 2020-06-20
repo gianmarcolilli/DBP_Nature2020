@@ -11,17 +11,18 @@ insert into NATURE.utente (nomeUtente, tipo, psw, email, annoNascita, dataRegist
 ('bobo43', 'amministratore', 'dsevni76','bobo43@gmail.com','1987','2019-03-12','operaio','1','3','4','2','1');
 
 insert into NATURE.specie values
-('ibiscus','vegetale','iris','2','1932','50','www.wikipedia/iris.it','43','12','21','2.3'),
-('picchio','animale','pictorius uccellus','2','1945','23','www.wikipedia/picchio.it','10','12','32','3.3');
+('ibiscus','vegetale','iris','2','1932','50','www.wikipedia/iris.it','43','12','21','2.3','foresta conifere'),
+('picchio','animale','pictorius uccellus','2','1945','23','www.wikipedia/picchio.it','10','12','32','3.3','foresta conifere');
 
 insert into NATURE.escursione (titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti) values
 ('gita al lago', '2012-03-12', '12:00', '18:00', 'la gita si svolgerà con i scarponi da montagna', '23'),
 ('gita al mare', '2012-03-10', '13:00', '20:00', 'la gita si svolgerà con il costume da mare', '10');
 
-insert into NATURE.habitat (descrizione) values
+insert into NATURE.habitat (nome) values
 ("habitat dell'uccello"),
 ("habitat del leone"),
-("habitat dell'iris");
+("habitat dell'iris"),
+("foresta conifere");
 
 #insert into NATURE.messaggio (nomeUtenteMittente, nomeUtenteDestinatario, titolo, testo) values
 #('mike32', 'giovanni3', 'saluti', 'ciao gio ti saluto'),
