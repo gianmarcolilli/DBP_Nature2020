@@ -123,17 +123,21 @@ CREATE TABLE ESCURSIONE(
     oraPartenza TIME,
     oraRitorno TIME,
     descrizione VARCHAR(500),
-    maxPartecipanti INT
+    maxPartecipanti INT,
+    utenteCreatore VARCHAR(64),
+    FOREIGN KEY (utenteCreatore) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE CASCADE
 )engine = InnoDB;
 
-/* Creazione pulita della tabella PARTECIPATO */
-DROP TABLE IF EXISTS PARTECIPATO;
-CREATE TABLE PARTECIPATO(
-	nomeUtente VARCHAR(64),
+/* Creazione pulita della tabella PARTECIPAZIONE_ESCURSIONE */
+DROP TABLE IF EXISTS PARTECIPAZIONE_ESCURSIONE;
+CREATE TABLE PARTECIPAZIONE_ESCURSIONE(
+	utenteCreatore VARCHAR(64),
+	utentePartecipante VARCHAR(64),
     id TINYINT,
-    PRIMARY KEY (nomeUtente, id),
-    FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (id) REFERENCES ESCURSIONE(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+    PRIMARY KEY (utenteCreatore, id, utentePartecipante),
+    FOREIGN KEY (utenteCreatore) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (utentePartecipante) REFERENCES UTENTE(nomeUtente)  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id) REFERENCES ESCURSIONE(id) ON DELETE CASCADE ON UPDATE CASCADE
 )engine = InnoDB;
 
 /* Creazione pulita della tabella PROGETTORICERCA */
@@ -339,12 +343,12 @@ CREATE PROCEDURE adesioneEscursione(IN nomeU VARCHAR(64), IN idEscursione TINYIN
     /*Controllo se partecipazione già presente*/
 		SET cont = (
 			SELECT COUNT(*) AS existsPart
-            FROM PARTECIPATO
+            FROM PARTECIPAZIONE_ESCURSIONE
             WHERE nomeU = nomeUtente
             AND idEscursione = id);
 
         IF cont < 1
-        THEN INSERT INTO PARTECIPATO(nomeUtente, id) VALUES
+        THEN INSERT INTO PARTECIPAZIONE_ESCURSIONE(nomeUtente, id) VALUES
         (nomeU, idEscursione);
         END IF;
 
@@ -374,12 +378,82 @@ CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importo
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciEscursione(IN idE TINYINT(4), IN titoloE VARCHAR(32), IN dataE DATE, IN startE TIME, IN returnE TIME, IN note VARCHAR(500), IN maxP INT(11))
+CREATE PROCEDURE inserisciEscursione(IN emailU VARCHAR(64), IN idE TINYINT(4), IN titoloE VARCHAR(32), IN dataE DATE, IN startE TIME, IN returnE TIME, IN note VARCHAR(500), IN maxP INT(11))
 /* Creo Escursione*/
 	BEGIN
-		INSERT INTO ESCURSIONE(id, titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti)
-        VALUES(idE, titoloE, dataE, startE, returnE, note, maxP);
+	INSERT INTO ESCURSIONE(id, titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti, utenteCreatore)
+	VALUES(idE, titoloE, dataE, startE, returnE, note, maxP, emailU);
+	        
     END;
+
+|
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS partecipaEscursione;
+
+DELIMITER |
+CREATE PROCEDURE partecipaEscursione(IN emailU VARCHAR(64), IN idE TINYINT(4))
+/* Creo Escursione */
+	BEGIN
+    DECLARE contEscursioni INT DEFAULT 0;
+    DECLARE contPartecipanti INT DEFAULT 0;
+    DECLARE contPartecipantiMax INT DEFAULT 0;
+    DECLARE utenteC varchar(64) DEFAULT NULL;    
+    DECLARE utenteP varchar(64) DEFAULT NULL;
+    
+    /* Controllo se escursione esiste */
+	SET contEscursioni = (
+		SELECT count(*)
+		FROM ESCURSIONE
+        WHERE idE = id );
+        
+		SELECT contEscursioni;
+        
+	/* Controllo numero di partecipanti attuali */
+	SET contPartecipanti = (
+		SELECT count(*)
+		FROM partecipazione_escursione
+        WHERE idE = id );
+        
+		SELECT contPartecipanti;
+        
+	/* Controllo e imposto utente creatore */
+    SET utenteC = (
+		SELECT utenteCreatore
+        FROM escursione
+        WHERE idE = id );
+        
+		SELECT utenteC;
+        
+	/* Controllo e imposto utente partecipante*/
+    SET utenteP = (
+		SELECT nomeUtente
+        FROM utente
+        WHERE emailU = email );
+        
+		SELECT utenteP;
+        
+	/* Controllo partecipanti attuali*/
+    SET contPartecipantiMax = (
+		SELECT maxPartecipanti
+		FROM escursione
+		WHERE idE = id );
+        
+		SELECT contPartecipantiMax;
+        
+	IF contEscursioni = 0 THEN
+		SELECT 'L\'escursione non esiste.';
+	ELSE IF utenteC != utenteP THEN
+		IF contPartecipanti < contPartecipantiMax THEN
+			INSERT INTO partecipazione_escursione VALUES (utenteC, utenteP, id);
+			SELECT 'Partecipazione aggiunta correttamente.';
+	    END IF;
+        
+	ELSE
+		SELECT 'Partecipazione non disponibile, raggiunto il massimo numero di partecipanti.';
+	END IF;
+	END IF;
+END;
 
 |
 DELIMITER ;
