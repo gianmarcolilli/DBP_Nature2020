@@ -1,6 +1,7 @@
-/* Visualizzo lo storage engine attualmente in uso. 
+/* Visualizzo lo storage engine attualmente in uso.
 SELECT @@default_storage_engine */
 /* Cancello il db DBSTV se esiste per poter lanciare in maniera pulita nuovamente la query, dopodichè lo creo e lo seleziono */
+
 DROP DATABASE IF EXISTS NATURE;
 /* Creo il database NATURE impostando codifica caratteri */
 CREATE DATABASE NATURE CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -30,7 +31,7 @@ CREATE TABLE UTENTE(
 DROP TABLE IF EXISTS HABITAT;
 CREATE TABLE HABITAT(
 	nome VARCHAR(64) PRIMARY KEY,
-    descrizione VARCHAR(500) 
+    descrizione VARCHAR(500)
 )engine = InnoDB;
 
 
@@ -44,10 +45,10 @@ CREATE TABLE SPECIE(
     annoClassif INT,
     vulnerabilita FLOAT,
     wikiLink VARCHAR(64),
-    cmAltezza INT,
-    cmDiametro INT, 
-    peso FLOAT,
-    mediaProle FLOAT,
+    cmAltezza INT DEFAULT NULL,
+    cmDiametro INT DEFAULT NULL,
+    peso FLOAT DEFAULT NULL,
+    mediaProle FLOAT DEFAULT NULL,
     nomeHabitat VARCHAR(64),
     FOREIGN KEY(nomeHabitat) REFERENCES HABITAT(nome) ON DELETE CASCADE ON UPDATE CASCADE
 )engine = InnoDB;
@@ -71,8 +72,10 @@ CREATE TABLE SEGNALAZIONE(
     latitudineGPS INT,
     longitudineGPS INT,
     foto LONGBLOB,
+	nomeHabitat VARCHAR(64),
+    FOREIGN KEY(nomeHabitat) REFERENCES HABITAT(nome) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE CASCADE
-    
+
 )engine = InnoDB;
 
 /* Creazione pulita della tabella  PROPOSTA*/
@@ -83,6 +86,8 @@ CREATE TABLE PROPOSTA(
     nomeUtente VARCHAR(64),
     commento VARCHAR (500),
     dataProposta DATE,
+	  specie VARCHAR(64),
+	  FOREIGN KEY(specie) REFERENCES SPECIE(nomeLatino) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id2) REFERENCES SEGNALAZIONE(id) ON DELETE CASCADE ON UPDATE NO ACTION,
     FOREIGN KEY(nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE NO ACTION
 )engine = InnoDB;
@@ -124,7 +129,7 @@ CREATE TABLE ESCURSIONE(
 /* Creazione pulita della tabella PARTECIPATO */
 DROP TABLE IF EXISTS PARTECIPATO;
 CREATE TABLE PARTECIPATO(
-	nomeUtente VARCHAR(64), 
+	nomeUtente VARCHAR(64),
     id TINYINT,
     PRIMARY KEY (nomeUtente, id),
     FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -178,8 +183,8 @@ CREATE TABLE MESSAGGIO(
 /* Creo Trigger che mi promuove l'utente da UTENTE SEMPLICE a UTENTE PREMIUM all'inserimento della 3 segnalazione */
 DROP TRIGGER IF EXISTS PromozioneUtente;
 DELIMITER |
-CREATE TRIGGER PromozioneUtente 
-AFTER INSERT ON SEGNALAZIONE 
+CREATE TRIGGER PromozioneUtente
+AFTER INSERT ON SEGNALAZIONE
 FOR EACH ROW
 BEGIN
 
@@ -191,11 +196,11 @@ IF(EXISTS(SELECT nomeUtente
         WHERE tipo = 'semplice' )
 	GROUP BY nomeUtente
     HAVING COUNT(*)>2))
-    
+
 THEN
-UPDATE UTENTE SET tipo='premium' WHERE nomeUtente = new.nomeUtente;    
+UPDATE UTENTE SET tipo='premium' WHERE nomeUtente = new.nomeUtente;
 END IF;
-    
+
 END;
 |
 DELIMITER ;
@@ -221,7 +226,7 @@ IF ( somma >= (
     WHERE id = new.id
     ))
 THEN
-   
+
    UPDATE RACCOLTAFONDI SET stato = 'CHIUSA' WHERE id = new.id;
 
 END IF;
@@ -238,7 +243,7 @@ DELIMITER |
 CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN passw VARCHAR(32), IN eaddress VARCHAR(64), IN birthdate int, IN professioneU VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
-    
+
 	/* Inizializzo variabile cont. */
 	SET cont = (
 		SELECT COUNT(*)
@@ -246,12 +251,12 @@ CREATE PROCEDURE AggiungiUtente(IN nomeU VARCHAR(64), IN passw VARCHAR(32), IN e
 		WHERE nomeU = nomeUtente
         AND tipo = 'semplice'
     );
-    
+
     IF cont < 1 THEN
 		INSERT INTO UTENTE(nomeUtente, tipo, psw, email, annoNascita, dataRegistrazione, professione) VALUES
         (nomeU, 'semplice', passw, eaddress, birthdate, CURDATE(), professioneU);
 	END IF;
-    
+
 	END;
 |
 DELIMITER ;
@@ -271,7 +276,7 @@ DELIMITER |
 CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(11), IN longitudineS INT(11))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
-    
+
     /* Controllo se la segnalazione esiste già. */
     	SET cont = (
 			SELECT COUNT(*) AS existsSegn
@@ -280,36 +285,36 @@ CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(
             AND latitudineS = latitudine
             AND longitudineS = longitudine
     );
-    
+
     IF cont < 1
     THEN
 		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudineGPS, longitudineGPS) VALUES
         (nomeU, CURDATE(), latitudineS, longitudineS);
     END IF;
-    
+
 	END;
 |
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE AggiungiPropostaS(IN idSegnalazione TINYINT(4), IN nomeU VARCHAR(64),IN commento VARCHAR(500))
-	BEGIN 
+CREATE PROCEDURE AggiungiPropostaS(IN idSegnalazione TINYINT(4), IN nomeU VARCHAR(64),IN commento VARCHAR(200), IN specie VARCHAR(64))
+	BEGIN
     DECLARE cont INT DEFAULT 0;
-    
+
     /*Controllo se la proposta è stata già inserita.*/
 		SET cont = (
 			SELECT count(*) AS existsProp
-            FROM PROPOSTA 
+            FROM PROPOSTA
             WHERE idSegnalazione = id2
             AND nomeU = nomeUtente
 		);
-		
+
         IF cont = 0
-        THEN 
-			INSERT INTO PROPOSTA (id2, nomeUtente, commento, dataProposta) VALUES
-            (idSegnalazione, nomeU, commento, CURDATE());
+        THEN
+			INSERT INTO PROPOSTA (id2, nomeUtente, commento, dataProposta, specie) VALUES
+            (idSegnalazione, nomeU, commento, CURDATE(), nomeSpecie);
 		END IF;
-        
+
     END;
 |
 DELIMITER ;
@@ -318,7 +323,7 @@ DELIMITER ;
 /*Inserimento messaggio*/
 DELIMITER |
 CREATE PROCEDURE condividiMessaggio(IN mittente VARCHAR(64), IN destinatario VARCHAR(64),IN titolo VARCHAR(32),IN testo VARCHAR(500))
-	
+
     BEGIN
 		INSERT INTO MESSAGGIO(nomeUenteMittente, nomeUtenteDestinatario, titolo, testo, tstamp ) VALUES
         (mittente, destinatario, titolo, testo, TIMESTAMP(CURDATE()));
@@ -335,32 +340,32 @@ CREATE PROCEDURE adesioneEscursione(IN nomeU VARCHAR(64), IN idEscursione TINYIN
 		SET cont = (
 			SELECT COUNT(*) AS existsPart
             FROM PARTECIPATO
-            WHERE nomeU = nomeUtente 
+            WHERE nomeU = nomeUtente
             AND idEscursione = id);
-		
+
         IF cont < 1
         THEN INSERT INTO PARTECIPATO(nomeUtente, id) VALUES
         (nomeU, idEscursione);
         END IF;
-        
+
     END;
 |
 DELIMITER ;
 
 DELIMITER |
 CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importoD FLOAT, IN noteD VARCHAR(250))
-	
+
     BEGIN
     DECLARE cont INT DEFAULT 0;
     /*Controllo se adesione già presente*/
 		SET cont = (
 			SELECT count(*)
             FROM ADESIONE, RACCOLTAFONDI
-            WHERE nomeU = ADESIONE.nomeUtente 
+            WHERE nomeU = ADESIONE.nomeUtente
             AND idRF = ADESIONE.id
             AND RACCOLTAFONDI.tipo = 'APERTA');
-            
-        IF cont = 0 
+
+        IF cont = 0
         THEN INSERT INTO ADESIONE(nomeUtente, id, importoD, noteD) VALUES
         (nomeU, idRF, importoD, noteD);
         END IF;
@@ -369,87 +374,87 @@ CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importo
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciEscursione(IN idE TINYINT(4), IN titoloE VARCHAR(32),IN startE TIME, IN returnE TIME, IN note VARCHAR(500), IN maxP INT(11))
+CREATE PROCEDURE inserisciEscursione(IN idE TINYINT(4), IN titoloE VARCHAR(32), IN dataE DATE, IN startE TIME, IN returnE TIME, IN note VARCHAR(500), IN maxP INT(11))
 /* Creo Escursione*/
 	BEGIN
 		INSERT INTO ESCURSIONE(id, titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti)
-        VALUES(idE, titoloE, CURDATE(), startE, returnE, note, maxP);
+        VALUES(idE, titoloE, dataE, startE, returnE, note, maxP);
     END;
 
 |
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT, IN nomeH VARCHAR(64))
+CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
-    
+
     DECLARE  cont INT DEFAULT 0;
-    
+
 		SET  cont = (
         SELECT count(*) AS existsSpecie
         FROM SPECIE
         WHERE tipo = 'vegetale'
         AND latino = nomeLatino);
-	
-    IF cont = 0 
-    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, nomeHabitat)
-    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole, nomeH);
+
+    IF cont = 0
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, nomeHabitat)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, nomeH);
     END IF;
-    
+
     END;
 
 |
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
+CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
-    
+
     DECLARE  cont INT DEFAULT 0;
-    
+
 		SET  cont = (
         SELECT count(*) AS existsSpecie
         FROM SPECIE
         WHERE tipo = 'animale'
         AND latino = nomeLatino);
-	
-    IF cont = 0 
-    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, nomeHabitat)
-    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, diametro, weight, prole, nomeH);
+
+    IF cont = 0
+    THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, peso, mediaProle, nomeHabitat)
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikipedia, altezza, weight, prole, nomeH);
     END IF;
-    
+
     END;
-    
+
 |
 DELIMITER ;
 
 DELIMITER |
 CREATE PROCEDURE inserisciHabitat(IN nomeH VARCHAR(64), IN descrizione VARCHAR(200))
 	BEGIN
-    
+
     DECLARE cont INT DEFAULT 0;
 
 		SET  cont = (
         SELECT count(*) AS existsHabitat
         FROM HABITAT
         WHERE  nomeH = nome);
-    
-    IF cont = 0 
+
+    IF cont = 0
     THEN  INSERT INTO HABITAT(nome, descrizione)
     VALUE (nomeH, descrizione);
-    END IF;        
-    
+    END IF;
+
     END;
-    
+
 |
 DELIMITER ;
 
 DELIMITER |
 CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wiki VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 	BEGIN
-    
+
     IF EXISTS(SELECT *
 						FROM SPECIE
                         WHERE latino = nomeLatino)
@@ -457,7 +462,7 @@ CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','a
     SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = wheight, mediaProle = prole, nomeHabitat = nomeH
     WHERE latino = nomeLatino;
     END IF;
-   
+
    END;
 
 |
@@ -466,7 +471,7 @@ DELIMITER ;
 DELIMITER |
 CREATE PROCEDURE updateHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
 	BEGIN
-    
+
     IF EXISTS(SELECT *
 						FROM HABITAT
                         WHERE id = idH)
@@ -474,7 +479,25 @@ CREATE PROCEDURE updateHabitat(IN idH TINYINT(4), IN descrizione VARCHAR(64))
     SET old.descrizione = descrizione
     WHERE id = idH;
     END IF;
-   
+
+   END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE updateUtente(IN nomeU VARCHAR(64), IN professioneU VARCHAR(64), IN birthU INT(11))
+	BEGIN
+
+    IF EXISTS(SELECT *
+						FROM UTENTE
+                        WHERE nomeUtente = nomeU)
+    THEN UPDATE UTENTE
+    SET  professione = professioneU, annoNascita = birthU
+    WHERE nomeUtente = nomeU;
+
+    END IF;
+
    END;
 
 |
@@ -482,31 +505,31 @@ DELIMITER ;
 
 
 DELIMITER |
-CREATE PROCEDURE inserisciRF(IN idPR TINYINT(4), IN descrizione VARCHAR(500), IN maxImporto FLOAT)
+CREATE PROCEDURE inserisciRF(IN idPR TINYINT(4), IN descrizione VARCHAR(500), IN inizio DATE, IN maxImporto FLOAT)
 	BEGIN
-    
+
     DECLARE cont INT DEFAULT 0;
 
 		SET  cont = (
         SELECT count(*) AS existsRaccolta
         FROM RACCOLTAFONDI
         WHERE  idPR = id2);
-    
-    IF cont = 0 
+
+    IF cont = 0
     THEN  INSERT INTO RACCOLTAFONDI(id2, inizio, descrizione, maxImporto)
     VALUE (idPR, CURDATE(), descrizione, maxImporto);
-    END IF;        
-    
+    END IF;
+
     END;
-    
+
 |
 DELIMITER ;
 /*SCHELETRO PROCEDURE
 DELIMITER |
 CREATE PROCEDURE nomeProcedura()
 	BEGIN
-    
-    
+
+
     END;
 
 |

@@ -18,20 +18,21 @@ if (isset($_SESSION['email']) && (!empty($_SESSION['email']))) {
   $sql=$conn->query("SELECT email
                     FROM UTENTE
                     WHERE email='{$_SESSION['email']}'
-                    AND tipo = 'premium'
+                    AND tipo = 'amministratore'
                     ");
+	  $count = mysqli_num_rows($sql);
     if ($count == 1){
-      $tipoUtente = 'premium';
+      $tipoUtente = 'amministratore';
     } else {
       // Check se utente amministratore
       $sql=$conn->query("SELECT email
                         FROM UTENTE
                         WHERE email='{$_SESSION['email']}'
-                        AND tipo = 'amministratore'
+                        AND tipo = 'premium'
                         ");
       $count = mysqli_num_rows($sql);
       if ($count == 1){
-        $tipoUtente = 'amministratore';
+        $tipoUtente = 'premium';
       }
     }
   }

@@ -62,7 +62,7 @@
                 while ($row = $sql->fetch_assoc()) {
                   $nome = $row['nomeUtente'];
                 }
-                echo $nome."!";
+                echo $nome." !";
                 ?>
               </span>
             </li>
@@ -96,7 +96,7 @@
 
       /* define variables and set to empty values */
       $emailErr = $pswErr = $rpswErr = $nomeErr = $dataErr = "";
-      $email = $psw = $rpsw = $name = $bithdate = $professione =  "";
+      $email = $psw = $rpsw = $name = $birthdate = $professione =  "";
 
       $username = $_POST["username"];
       $email = $_POST["email"];

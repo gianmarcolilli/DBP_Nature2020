@@ -15,7 +15,7 @@ if(isset($datiMongo)){
 		$bulk->insert(['inserimento' => $datiMongo]);
 
 		// Esegue il comando sul db Log, che se non esiste viene creato
-		$manager->executeBulkWrite('epool.log', $bulk);
+		$manager->executeBulkWrite('nature.log', $bulk);
 	} catch(MongoDB\Driver\Exception\Exception $e) {
 		echo "<br><br><br>".$e -> getMessage(), "\n";
 		exit;
