@@ -1,11 +1,14 @@
-<?php
-include('header.php');
-  ?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
+
 <body>
 
-<?php
-	require_once('navbar.php');
-	?>
+<!-- import navbar -->
+<?php require_once('navbar.php');	?>
+
   <!-- Masthead -->
   <header class="masthead text-white text-center">
     <div class="overlay"></div>
@@ -16,50 +19,12 @@ include('header.php');
             gestione e classificazione della bio-diversità floristiche/faunistica</h1>
         </div>
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-          
+
         </div>
       </div>
     </div>
   </header>
 
-
-  <?php
-  // QUESTO SARA' DA MODIFICARE PER IL CONTROLLO SESSIONE UTENTE
-    if (//isset($_SESSION['email']) && (!empty($_SESSION['email'])))
-    true){
-  ?>
-
-  <!-- Lettura utenti -->
-  <section class="bg-light text-center">
-    <div class="container">
-      <h2>Lettura utenti</h2>
-    <?php
-
-      $sql=$conn->query("SELECT nomeUtente, email FROM UTENTE");
-      echo "<select class=\"form-control\" id=\"tappaP\" name=\"tappaP\">";
-      echo "<option value=\"0\">-- Seleziona una opzione --</option>";
-      //fetch_assoc() è un metodo che mi ritorna TRUE finchè ci sono delle righe nel DB
-      while ($row = $sql->fetch_assoc()) {
-        unset($nomeUtente, $email);
-        $nomeUtente = $row['nomeUtente'];
-        $email = $row['email'];
-        echo "<option value=\"$nomeUtente\">Utente: $nomeUtente --> email: $email</option>";
-      }
-      echo "</select>";
-    ?>
-
-
-    </div>
-  </section>
-
-  <?php
-      } else {
-        ?>
-        <br><br><br>
-        <div class="container" align="center"><h3>Per poter visualizzare, esegui il <a href="./login.html">login</a>!</h3></div>
-        <?php
-      }
-    ?>
 
   <!-- Image Showcases -->
   <section class="showcase">
@@ -88,7 +53,7 @@ include('header.php');
          <a href="elencoRaccoltaFondi.php"> <h2><i class="fa fa-arrow-right"></i> Elenco delle campagne di raccolta fondi</h2></a>
           <p class="lead mb-0">Potrai visualizzare l'elenco di tutte le campagne di raccolta fondi ancora aperte e potrai effettuare una donazione.</p>
 			<?php
-          if($tipoUtente == 'amministratore'){  
+          if($tipoUtente == 'amministratore'){
 			?>
           <a href="inserisciRaccolta.php"><p class="lead mb-0"><i class="fa fa-plus"></i>Inserisci nuova campagna di raccolta fondi</p></a>
 			<?php } ?>
@@ -100,12 +65,12 @@ include('header.php');
           <a href="elencoSegnalazioni.php"><h2><i class="fa fa-arrow-right"></i> Elenco delle segnalazioni di avvistamento</h2></a>
           <p class="lead mb-0">Potrai visualizzare tutte le segnalazioni di avvistamento effettuate dagli utenti iscritti alla piattaforma.</p>
 			<?php
-          if($tipoUtente != 'amministratore'){  
+          if($tipoUtente != 'amministratore'){
 			?>
           <a href="inserisciSegnalazione.php"><p class="lead mb-0"><i class="fa fa-plus"></i>Inserisci nuova segnalazione d'avvistamento</p></a>
 			<?php } ?>
 			<?php
-          if($tipoUtente == 'amministratore'){  
+          if($tipoUtente == 'amministratore'){
 			?>
 			<a href="elencoProposteClassif.php"><p class="lead mb-0"><i class="fa fa-edit"></i>Visualizza o modifica proposte di classificazione</p></a>
 			<?php } ?>
@@ -114,10 +79,10 @@ include('header.php');
       <div class="row no-gutters">
         <div class="col-lg-6 text-white showcase-img" style="background-image: url('img/wanderer.jpg');"></div>
         <div class="col-lg-6 my-auto showcase-text">
-         <a href="elencoEscursioni.php"> <h2> <i class="fa fa-arrow-right"></i> Elenco delle escursioni</h2></a>
+         <a href="./elencoEscursioni.php"> <h2> <i class="fa fa-arrow-right"></i> Elenco delle escursioni</h2></a>
          <p class="lead mb-0">Potrai visualizzare l'elenco di tutte escursioni effettuate e da effettuare a cui ci si può iscrivere.</p>
 			<?php
-          if($tipoUtente == 'premium'){  
+          if($tipoUtente == 'premium'){
 			?>
          <a href="inserisciEscursione.php"><p class="lead mb-0"><i class="fa fa-plus"></i>Inserisci nuova escursione</p></a>
 			<?php } ?>

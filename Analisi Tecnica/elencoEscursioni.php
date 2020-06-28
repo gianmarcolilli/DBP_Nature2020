@@ -1,11 +1,14 @@
-<?php
-require_once('header.php');
-require_once('navbar.php');
-?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
 
 <body>
   <?php
+  require_once('navbar.php');
   include('connection.php');
+  
   $sql= "select id,
   titolo,
   dataEscursione,
@@ -29,13 +32,13 @@ require_once('navbar.php');
       <form action="partecipaEscursione_do.php" method="post">
         <thead class="thead-inverse ">
           <tr>
-            <th >ESCURSIONE N°  </th>
-            <th >Titolo:  </th>
-            <th >Data:</th>
-            <th >Orario di partenza:</th>
-            <th >Orario di ritorno:</th>
-            <th >Descrizione:</th>
-            <th >Numero massimo di partecipanti:</th>
+            <th>ESCURSIONE N°  </th>
+            <th>Titolo:  </th>
+            <th>Data:</th>
+            <th>Orario di partenza:</th>
+            <th>Orario di ritorno:</th>
+            <th>Descrizione:</th>
+            <th>Numero massimo di partecipanti:</th>
             <th></th>
           </tr>
         </thead>
@@ -62,13 +65,13 @@ require_once('navbar.php');
 
           <tbody>
             <tr>
-              <td ><?= $f1?></td>
-              <td ><?= $f2?></td>
-              <td ><?= $f3?></td>
-              <td ><?= $f4?></td>
-              <td ><?= $f5?></td>
-              <td ><?= $f6?></td>
-              <td ><?= $f7?></td>
+              <td><?= $f1?></td>
+              <td><?= $f2?></td>
+              <td><?= $f3?></td>
+              <td><?= $f4?></td>
+              <td><?= $f5?></td>
+              <td><?= $f6?></td>
+              <td><?= $f7?></td>
               <td>
                 <div class="form-group"  >
                   <div class="row">
