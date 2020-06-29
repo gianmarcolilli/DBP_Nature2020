@@ -1,3 +1,4 @@
+
 insert into NATURE.progettoricerca (id) values
 ("1"),("2"),("3"),("4"),("5"),("6"),("7");
 
@@ -49,11 +50,5 @@ insert into NATURE.adesione values
 ('1', 'mike32', '1200', 'ok'),
 ('2', 'gian', '1200', 'ok'),
 ('2', 'bobo43', '1400', 'ok');
-
-CALL partecipaEscursione('mike32@gmail.com', '2');
-
-select * from partecipazione_escursione;
-select * from escursione;
-
 
 
