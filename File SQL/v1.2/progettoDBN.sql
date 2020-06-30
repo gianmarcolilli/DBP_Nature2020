@@ -86,8 +86,8 @@ CREATE TABLE PROPOSTA(
     nomeUtente VARCHAR(64),
     commento VARCHAR (500),
     dataProposta DATE,
-	  specie VARCHAR(64),
-	  FOREIGN KEY(specie) REFERENCES SPECIE(nomeLatino) ON DELETE CASCADE ON UPDATE CASCADE,
+	specie VARCHAR(64),
+	FOREIGN KEY(specie) REFERENCES SPECIE(nomeLatino) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id2) REFERENCES SEGNALAZIONE(id) ON DELETE CASCADE ON UPDATE NO ACTION,
     FOREIGN KEY(nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE NO ACTION
 )engine = InnoDB;
@@ -595,6 +595,21 @@ CREATE PROCEDURE inserisciRF(IN idPR TINYINT(4), IN descrizione VARCHAR(500), IN
     VALUE (idPR, CURDATE(), descrizione, maxImporto);
     END IF;
 
+    END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE eliminaSpecie(IN nomeS VARCHAR(64))
+	BEGIN
+    SET cont = (SELECT * 
+						FROM SPECIE
+                        WHERE nomeLatino = nomeS );
+	IF cont  > 0
+    THEN DELETE FROM SPECIE WHERE nomeLatino = nomeS;
+    END IF;
+    
     END;
 
 |
