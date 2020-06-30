@@ -96,8 +96,9 @@ foreach ($result as $row) :
 	<div class="form-group"  >
 		<div class="row">
 			<div class="col-6">
-				<form action="modificaSpecie.php?nomeLatino=<?=$f1?>">
-					<button onclick="" class="btn btn-success"  >
+				<form action="modificaSpecie.php" method="post">
+					<input type="hidden" name="nomeLatinospecie" value="<?= $f1 ?>" >
+					<button  class="btn btn-success"  >
 						<i class="fa fa-edit" aria-hidden="true">Modifica </i>
 					</button>
 				</form>

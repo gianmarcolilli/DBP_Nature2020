@@ -6,11 +6,11 @@
 
    <?php
 	  include('navbar.php');
-	  include('connection.php');
-	  $nomelat='';
-	  if(isset($_GET['nomeLatino']))
-		  $nomelat=$_GET['nomeLatino'];
-	  $sql="select nomeLatino, 
+	  //include('connection.php');
+	  
+	  $nomeLat=$_POST['nomeLatinospecie'];
+	  
+	  $sql=$conn->query("select nomeLatino, 
 			tipo,
 			nomeItaliano,
 			classe,
@@ -21,20 +21,11 @@
 			cmDiametro,
 			peso,
 			mediaProle,
-			nomeHabitat from specie where '$nomelat'='nomeLatino'";
+			nomeHabitat from specie where nomeLatino='$nomeLat' ");
 
-try {
-  $stmt = $conn->prepare($sql);
-  $stmt->execute();
-} catch (PDOException $e) {
-    print $e;
-    exit();
-}
-$result = $stmt->fetchAll();
-	  
-	  
-    
-	$f1=$result['nomeLatino'];
+	  while ($row = $sql->fetch_assoc()) {
+	
+	$f1=$row['nomeLatino'];
 	$f2=$row['tipo'];
 	$f3=$row['nomeItaliano'];
 	$f4=$row['classe'];
@@ -46,7 +37,7 @@ $result = $stmt->fetchAll();
 	$f10=$row['peso'];
 	$f11=$row['mediaProle'];
 	$f12=$row['nomeHabitat'];
-	  
+	  }
 	  ?>
 	<!-- Visualizzazione profilo personale -->
     <div class="alert alert-info alert-dismissable" role="alert">
@@ -59,69 +50,69 @@ $result = $stmt->fetchAll();
     <h3 align="center">Aggiorna specie</h3>
     <div class ="row">
       <div class = "container">
-        <form>
+        <form action="modificaSpecie_do.php" method="post" id="modificaSpecie">
           <div class="form-row">
             <div class="form-group col-6">
               <label for="updateNomeLatino">Nome Latino</label>
-              <input type="text" class="form-control" id="updateNomeLatino" placeholder="<?=$f1?>">
+              <input type="text" class="form-control" name="updateNomeLatino" value="<?=$f1?>">
             </div>
 			   <div class="form-group col-6">
               <label for="updateNomeItaliano">Nome Italiano</label>
-              <input type="text" class="form-control" id="updateNomeItaliano" placeholder="<?=$f3?>">
+              <input type="text" class="form-control" name="updateNomeItaliano" value="<?=$f3?>">
             </div>
 			  
             <div class="form-group col-4">
               <label for="updateTipo">Tipo</label>
-              <input type="text" class="form-control" id="updateTipo" placeholder="<?=$f2?>">
+              <input type="text" class="form-control" name="updateTipo" value="<?=$f2?>">
             </div>
 			  <div class="form-group col-8">
               <label for="updateClasse"> Classe</label>
-              <input type="text" class="form-control" id="updateClasse" placeholder="<?=$f4?>">
+              <input type="text" class="form-control" name="updateClasse" value="<?=$f4?>">
             </div>
 			  
             <div class="form-group col-4">
               <label for="updateAnnoClassif">Anno classificazione</label>
-              <input type="text" pattern="(?=.*\d).{4,4}" maxlength="4" class="form-control" name="updateAnnoClassif" placeholder="<?=$f5?>">
+              <input type="text" pattern="(?=.*\d).{4,4}" maxlength="4" class="form-control" name="updateAnnoClassif" value="<?=$f5?>">
               <span class="error"><?php echo $dataErr;?></span>
             </div>
               <div class="form-group col-8">
               <label for="updateWikiLink"> Link di wikipedia</label>
-              <input type="text" class="form-control" id="updateWikiLink" placeholder="<?=$f7?>">
+              <input type="text" class="form-control" name="updateWikiLink" value="<?=$f7?>">
             </div>
 			  
 			  <div class="form-group col-3">
               <label for="updateVulnerabilita">Vulnerabilità</label>
-              <input type="text" pattern="(?=.*\d).{3,3}" maxlength="3" class="form-control" name="updateVulnerabilita" placeholder="<?=$f6?>">
+              <input type="text" pattern="(?=.*\d).{3,3}" maxlength="3" class="form-control" name="updateVulnerabilita" value="<?=$f6?>">
             </div>
 			</div>
 			<div class="form-row">
               <div class="form-group col-3">
               <label for="updateAltezza"> Altezza (cm)</label>
-              <input type="text" class="form-control" id="updateAltezza" placeholder="<?=$f8?>">
+              <input type="text" class="form-control" name="updateAltezza" value="<?=$f8?>">
 				</div>
 			  <div class="form-group col-3">
               <label for="updateDiametro"> Diametro (cm)</label>
-              <input type="text" class="form-control" id="updateDiametro" placeholder="<?=$f9?>">
+              <input type="text" class="form-control" name="updateDiametro" value="<?=$f9?>">
             </div>
 				<div class="form-group col-3">
               <label for="updatePeso"> Peso (kg)</label>
-              <input type="text" class="form-control" id="updatePeso" placeholder="<?=$f10?>">
+              <input type="text" class="form-control" name="updatePeso" value="<?=$f10?>">
             </div>
 			<div class="form-group col-3">
               <label for="updateMediaProle"> Media Prole </label>
-              <input type="text" class="form-control" id="updateMediaProle" placeholder="<?=$f11?>">
+              <input type="text" class="form-control" name="updateMediaProle" value="<?=$f11?>">
             </div>
 			</div>
 				<div class="form-row">
 			<div class="form-group col-6">
               <label for="updateHabitat"> Habitat </label>
-              <!--<input type="text" class="form-control" id="updateHabitat" placeholder=""> -->
-				<!--SELECT-->      
+				
+				<!--SELECT -->     
 	<?php
-      $sql=$conn->query("SELECT nome FROM HABITAT");
+       $sql=$conn->query("SELECT nome FROM HABITAT");
 					?>
-     <select class="form-control" id="tappaP" name="tappaP">
-      <option value="0">-- Seleziona una opzione --</option>
+     <select class="form-control" id="tappaP" name="updateHabitat">
+      <option value="<?=$f12?>">Habitat attuale: <?=$f12?></option>
       <?php
 		 //fetch_assoc() è un metodo che mi ritorna TRUE finchè ci sono delle righe nel DB
 		 
@@ -131,12 +122,13 @@ $result = $stmt->fetchAll();
         ?>
         <option value="<?=$nome?>"> Habitat: <?=$nome?>  </option>
 		 <?php
-      }
+      } 
 		
 		 ?>
      </select>
-	<!-- FINE SELECT-->
+	<!--FINE SELECT-->
 			</div>	
+					</form>
 		<div class="form-group col-5">
 			<form action="inserisciHabitat.php">Se non è presente l'habitat di tuo interesse, aggiungine uno
 					<button onclick="location.href='inserisciHabitat.php"  class="btn btn-info"  >
@@ -149,9 +141,9 @@ $result = $stmt->fetchAll();
 		  
 				</div>
 					<div class="form-group col-3-offset-3 align-content-around">
-                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-arrow-right"></i> Aggiorna  </button>
+                    <button type="submit" class="btn btn-success btn-block"  form="modificaSpecie"><i class="fa fa-arrow-right"></i> Aggiorna  </button>
                   </div>
-					</form>
+					
 			
 		  
 
