@@ -121,7 +121,6 @@
     </div>
   </section>
 
-
   <?php require_once('footer.php'); ?>
 
   <!-- Bootstrap core JavaScript -->
