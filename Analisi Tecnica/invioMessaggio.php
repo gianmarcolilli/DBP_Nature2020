@@ -1,20 +1,25 @@
-<?php
-include('header.php');
-  ?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
+
 <body>
 
 <?php
 	include('navbar.php');
-	include('mostraNomeUtenteSessione.php');?>
-	
+	include('mostraNomeUtenteSessione.php');
+  ?>
+
 	<section style="min-height: 700px; background-color: grey" >
-		<div class="container-fluid" >
+		<div class="container-fluid">
+      <br>
 			<div class="container">
 				<form action="inviaMessaggio_do.php" method="post" id="inviaMess">
 				<div class="row">
 					<p class="text-white">Invia a:</p>
 				<div class="col-4">
-					<!--SELECT-->      
+					<!--SELECT-->
 	<?php
       $sql=$conn->query("SELECT nomeUtente, email FROM UTENTE where nomeUtente!= '$nome'");
 					?>
@@ -40,17 +45,18 @@ include('header.php');
 				<div class="row">
 					<p class="text-white">Titolo:</p>
 					<div class="col-6">
-						<input type="text" class="form-control alert-dark" name="titoloMess"> 
+						<input type="text" class="form-control alert-dark" name="titoloMess">
 					</div>
 				</div>
 				<br>
 				<div class="row">
 					<p class="text-white">Testo:</p>
 					<div class="col-8">
-						<textarea type="text" class="form-control alert-dark" style="min-height: 400px" name="testoMess"></textarea> 
+						<textarea type="text" class="form-control alert-dark" style="min-height: 400px" name="testoMess"></textarea>
 					</div>
 				</div>
 				</form>
+          <br>
 				<div class="row col-3">
 					<button type="submit" class="btn btn-success btn-block" form="inviaMess"><i class="fa fa-arrow-right"></i> Invia Messaggio</button>
 				</div>

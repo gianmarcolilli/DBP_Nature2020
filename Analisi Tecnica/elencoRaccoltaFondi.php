@@ -1,18 +1,16 @@
-<?php
-require_once('header.php');
-require_once('navbar.php');
-?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
 
 <body>
   <?php
-  include('connection.php');
-  $sql= "select
-  id,
-  id2,
-  stato,
-  inizio,
-  descrizione,
-  maxImporto from raccoltafondi";
+  	include('navbar.php');
+    include('connection.php');
+  $sql = "SELECT id, id2, stato, inizio, descrizione, maxImporto
+          FROM raccoltafondi
+          ";
   try {
     $stmt = $conn->prepare($sql);
     $stmt->execute();
