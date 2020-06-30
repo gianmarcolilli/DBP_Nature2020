@@ -42,7 +42,7 @@ CREATE TABLE SPECIE(
     tipo ENUM('animale','vegetale'),
     nomeItaliano VARCHAR(64),
     classe VARCHAR(64),
-    annoClassif INT,
+    annoClassif INT(4),
     vulnerabilita FLOAT,
     wikiLink VARCHAR(64),
     cmAltezza INT DEFAULT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE ADESIONE(
 /* Creazione pulita della tabella  MESSAGGIO*/
 DROP TABLE IF EXISTS MESSAGGIO;
 CREATE TABLE MESSAGGIO(
-	id TINYINT PRIMARY KEY,
+	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     nomeUtenteMittente VARCHAR(64),
 	nomeUtenteDestinatario VARCHAR(64),
     titolo VARCHAR(32),
@@ -325,11 +325,11 @@ DELIMITER ;
 
 /*Inserimento messaggio*/
 DELIMITER |
-CREATE PROCEDURE condividiMessaggio(IN mittente VARCHAR(64), IN destinatario VARCHAR(64),IN titolo VARCHAR(32),IN testo VARCHAR(500))
+CREATE PROCEDURE condividiMessaggio(IN mittente VARCHAR(64), IN destinatario VARCHAR(64), IN titolo VARCHAR(32), IN testo VARCHAR(500), IN tstamp TIMESTAMP)
 
     BEGIN
-		INSERT INTO MESSAGGIO(nomeUenteMittente, nomeUtenteDestinatario, titolo, testo, tstamp ) VALUES
-        (mittente, destinatario, titolo, testo, TIMESTAMP(CURDATE()));
+		INSERT INTO MESSAGGIO(nomeUtenteMittente, nomeUtenteDestinatario, titolo, testo, tstamp ) VALUES
+        (mittente, destinatario, titolo, testo, TIMESTAMP(CURTIME()));
     END;
 
 |
@@ -448,7 +448,7 @@ END;
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN nomeH VARCHAR(64))
+CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM('vegetale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(4), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
 
@@ -471,7 +471,7 @@ CREATE PROCEDURE inserisciSpecieFloristica(IN latino VARCHAR(64), IN tipoS ENUM(
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
+CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM('animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(4), IN vulnerabilita FLOAT, IN wikipedia VARCHAR(64), IN altezza INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 /*Inserimento specie floristica*/
 	BEGIN
 
@@ -485,7 +485,7 @@ CREATE PROCEDURE inserisciSpecieFaunistica(IN latino VARCHAR(64), IN tipoS ENUM(
 
     IF cont = 0
     THEN  INSERT INTO SPECIE(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, peso, mediaProle, nomeHabitat)
-    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikipedia, altezza, weight, prole, nomeH);
+    VALUE (latino, tipoS, italiano, class, annoC, vulnerabilita, wikiLink, altezza, weight, prole, nomeH);
     END IF;
 
     END;
@@ -526,6 +526,46 @@ CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale', '
     END IF;
 
    END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE inserisciGestioneH(IN nomeHab VARCHAR(64), IN nomeUt VARCHAR(64), IN tipoop VARCHAR(16))
+	BEGIN
+	/* DECLARE cont INT DEFAULT 0;
+
+		SET  cont = (
+        SELECT count(*) AS existHabitat
+        FROM GESTIONEH
+        WHERE  nomeHab = nomeH);
+
+    IF cont = 0
+    THEN */ INSERT INTO GESTIONEH(nomeH, nomeUtente, tipoOperazione)
+    VALUE (nomeHab, nomeUt, tipoop);
+	/*END IF;*/
+	
+    END;
+
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE PROCEDURE inserisciGestioneS(IN nomeLat VARCHAR(64), IN nomeUt VARCHAR(64), IN tipoop VARCHAR(16))
+	BEGIN
+	DECLARE cont INT DEFAULT 0;
+
+		SET  cont = (
+        SELECT count(*) AS existSpecie
+        FROM GESTIONES
+        WHERE  nomeLat = nomeLatino);
+
+    IF cont = 0
+    THEN INSERT INTO GESTIONES(nomeLatino, nomeUtente, tipoOperazione)
+    VALUE (nomeLat, nomeUt, tipoop);
+	END IF;
+	
+    END;
 
 |
 DELIMITER ;
