@@ -14,7 +14,7 @@ require_once('header.php');
     $f1 = $f2 = $f3 = $f4 =  "";
     $t1 = $t2 = $t3 = $t4 =  "";
 
-    $f1=$_POST['destinatarioMess'];			$t1='Utente destinatario';
+    $f1=$_POST['destinatario'];							$t1='Utente destinatario';
     $f2=$_POST['titoloMess'];				$t2='Titolo';
     $f3=$_POST['testoMess'];				$t3='Testo';
 	$f4=$nome;								$t4='utente';
@@ -52,7 +52,7 @@ require_once('header.php');
       echo "<div class=\"text-success\">\n I campi sono stati compilati correttamente.</div>";
       $sql = "CALL condividiMessaggio('$f4', '$f1', '$f2', '$f3', TIMESTAMP(CURTIME()))";
       if ($conn->query($sql) == TRUE) {
-        echo "<div class=\"text-success\"><br>Il messaggio è stato inviato!!</div>";
+        echo "<div class=\"text-success\"><br>Il messaggio è stato inviato!!.</div>";
         header("refresh:1;url=./elencoMessRicevuti.php");
         //require 'mongoDBconn.php';
       } else {
