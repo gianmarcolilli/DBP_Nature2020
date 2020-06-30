@@ -230,7 +230,6 @@ IF ( somma >= (
     WHERE id = new.id
     ))
 THEN
-
    UPDATE RACCOLTAFONDI SET stato = 'CHIUSA' WHERE id = new.id;
 
 END IF;
@@ -360,9 +359,7 @@ DELIMITER |
 CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importoD FLOAT, IN noteD VARCHAR(250))
 
     BEGIN
-
- INSERT INTO ADESIONE(nomeUtente, id, importoDonazione, noteDonazione) VALUES
-        (nomeU, idRF, importoD, noteD);
+	INSERT INTO ADESIONE(id, nomeUtente, importoDonazione, noteDonazione) VALUES (nomeU, idRF, importoD, noteD);
 
     END;
 |

@@ -3,10 +3,10 @@ insert into NATURE.progettoricerca (id) values
 ("1"),("2"),("3"),("4"),("5"),("6"),("7");
 
 insert into NATURE.raccoltafondi (id2,inizio,descrizione,maxImporto) values
-('2','2005-12-11', 'la raccolta e per noi', '1200'),
-('4','2006-11-23','questa raccolta è per te','2500'),
-('1','2006-11-03','questa raccolta è per il terremoto','50000'),
-('6','2020-11-21','questa raccolta è per i bambini','30000');
+('2','2005-12-11', 'la raccolta e\' per noi', '1200'),
+('4','2006-11-23','questa raccolta e\' per te','2500'),
+('1','2006-11-03','questa raccolta e\' per il terremoto','50000'),
+('6','2020-11-21','questa raccolta e\' per i bambini','30000');
 
 insert into NATURE.utente (nomeUtente, tipo, psw, email, annoNascita, dataRegistrazione, professione, classifCorrette, classifNonCorrette, classifTotali, affidabilita, contatore ) values
 ('mike32', 'semplice', 'm','mike32@gmail.com','1985','2018-03-21','avvocato','2','3','5','2','1'),
