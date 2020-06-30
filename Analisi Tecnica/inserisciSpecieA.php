@@ -1,14 +1,14 @@
    <?php
      require('header.php');
     ?>
-  
+
   <body>
 
    <?php
 	  include('navbar.php');
-	 
+
 	  ?>
-	  
+
 	<!-- Visualizzazione profilo personale -->
     <div class="alert alert-info alert-dismissable" role="alert">
       <strong>Pagina di inserimento di una nuova specie.</strong> Qui l'utente amministratore può inserire una nuova specie nel database.
@@ -30,27 +30,27 @@
               <label for="">Nome Italiano</label>
               <input type="text" class="form-control" name="nomeItaliano" placeholder="Inserisci il nome in italiano">
             </div>
-			  
+
             <div class="form-group col-3">
               <label for="">Tipo</label>
 				<input type="text" class="form-control" name="tipo" value="Animale" readonly >
-			
+
             </div>
 			  <div class="form-group col-9">
               <label for=""> Classe</label>
               <input type="text" class="form-control" name="classe" placeholder="Inserisci classe">
             </div>
-			  
+
             <div class="form-group col-4">
               <label for="">Anno classificazione</label>
               <input type="text" pattern="(?=.*\d).{4,4}" maxlength="4" class="form-control" name="annoClassif" placeholder="Anno di classificazione">
-              <span class="error"><?php echo $dataErr;?></span>
+              <span class="error"><?php //echo $dataErr;?></span>
             </div>
               <div class="form-group col-8">
               <label for=""> Link di wikipedia</label>
               <input type="text" class="form-control" name="wikiLink"  placeholder="Inserisci link di wikipedia">
             </div>
-			  
+
 			  <div class="form-group col-3">
               <label for="">Vulnerabilità</label>
               <input type="text" pattern="(?=.*\d).{3,3}" maxlength="3" class="form-control" name="vulnerabilita" placeholder="Vulnerabilità">
@@ -79,7 +79,7 @@
 			<div class="form-group col-6">
               <label for=""> Habitat </label>
               <!--<input type="text" class="form-control" id="updateHabitat" placeholder="Habitat"> -->
-				<!--SELECT-->      
+				<!--SELECT-->
 	<?php
       $sql=$conn->query("SELECT nome FROM HABITAT");
 					?>
@@ -87,7 +87,7 @@
       <option value="0">-- Seleziona una opzione --</option>
       <?php
 		 //fetch_assoc() è un metodo che mi ritorna TRUE finchè ci sono delle righe nel DB
-		 
+
       while($row = $sql->fetch_assoc()) {
         unset($nome);
         $nome = $row['nome'];
@@ -99,17 +99,17 @@
      </select>
 	<!-- FINE SELECT-->
 					</div>
-		
+
 		<!--<div class="form-group col-5">
 			Se non è presente l'habitat di tuo interesse, aggiungine uno
 					<button class="btn btn-info"  >
 						<a href="inserisciHabitat.php"><i class="fa fa-plus" aria-hidden="true"> Aggiungi</i></a>
 					</button>
-			
+
 		</div>-->
-				     
+
 		  </div>
-			
+
 <div class="form-group col-3">
                     <button type="submit" class="btn btn-success btn-block"><i class="fa fa-arrow-right"></i> Inserisci nuova specie  </button>
                   </div>

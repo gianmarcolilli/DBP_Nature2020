@@ -502,14 +502,13 @@ CREATE PROCEDURE inserisciHabitat(IN nomeH VARCHAR(64), IN descrizione VARCHAR(2
 
     DECLARE cont INT DEFAULT 0;
 
-		SET  cont = (
+		SET cont = (
         SELECT count(*) AS existsHabitat
         FROM HABITAT
         WHERE  nomeH = nome);
 
-    IF cont = 0
-    THEN  INSERT INTO HABITAT(nome, descrizione)
-    VALUE (nomeH, descrizione);
+    IF cont = 0 THEN  
+		INSERT INTO HABITAT(nome, descrizione) VALUE (nomeH, descrizione);
     END IF;
 
     END;
@@ -518,14 +517,14 @@ CREATE PROCEDURE inserisciHabitat(IN nomeH VARCHAR(64), IN descrizione VARCHAR(2
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vulnerabilita FLOAT, IN wiki VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
+CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale', 'animale'), IN italiano VARCHAR(64), IN class VARCHAR(64), IN annoC INT(11), IN vul FLOAT, IN wiki VARCHAR(64), IN altezza INT(11), IN diametro INT(11), IN weight FLOAT, IN prole FLOAT,  IN nomeH VARCHAR(64))
 	BEGIN
 
-    IF EXISTS(SELECT *
-						FROM SPECIE
-                        WHERE latino = nomeLatino)
+    IF EXISTS(  SELECT *
+				FROM SPECIE
+				WHERE latino = nomeLatino)
     THEN UPDATE SPECIE
-    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = weight, mediaProle = prole, nomeHabitat = nomeH
+    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassif = annoC , vulnerabilita = vul, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = weight, mediaProle = prole, nomeHabitat = nomeH
     WHERE latino = nomeLatino;
     END IF;
 
@@ -594,12 +593,14 @@ DELIMITER ;
 DELIMITER |
 CREATE PROCEDURE eliminaSpecie(IN nomeS VARCHAR(64))
 	BEGIN
+    
     DECLARE cont INT DEFAULT 0;
-    SET cont = (SELECT count(*)
-						FROM SPECIE
-                        WHERE nomeLatino = nomeS );
-	IF cont  > 0
-    THEN DELETE FROM SPECIE WHERE nomeLatino = nomeS;
+    
+    SET cont = (SELECT count(*) 
+				FROM SPECIE
+				WHERE nomeLatino = nomeS );
+	IF cont  > 0 THEN 
+		DELETE FROM SPECIE WHERE nomeLatino = nomeS;
     END IF;
     
     END;

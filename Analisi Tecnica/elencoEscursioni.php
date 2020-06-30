@@ -69,8 +69,8 @@
                 <td><?= $f6 ?></td>
                 <td><?= $f7 ?></td>
                 <td>
-                  <form action="partecipaEscursione_do.php" method="post">
-                  <div class="form-group"  >
+                <form action="partecipaEscursione_do.php" method="post">
+                  <div class="form-group">
                     <div class="row">
                       <div class="col-12 vertical-center text-center">
                         <input type="hidden" name="idEscursione" value="<?php echo $f1; ?>" />

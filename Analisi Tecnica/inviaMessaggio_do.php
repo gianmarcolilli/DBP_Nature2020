@@ -50,10 +50,10 @@ require_once('header.php');
 
     if($contConvalida == 4){
       echo "<div class=\"text-success\">\n I campi sono stati compilati correttamente.</div>";
-      $sql = "CALL condividiMessaggio('$f4', '$f1', '$f2', '$f3', TIMESTAMP(CURTIME()))";
+      $sql = "CALL condividiMessaggio('$f4', '$f1', '$f2', '$f3', TIMESTAMP(CURDATE()))";
       if ($conn->query($sql) == TRUE) {
-        echo "<div class=\"text-success\"><br>Il messaggio è stato inviato!!</div>";
-        header("refresh:1;url=./elencoMessRicevuti.php");
+        echo "<div class=\"text-success\"><br>La raccolta fondi è stata inserita correttamente.</div>";
+        header("refresh:3;url=./messaggiRicevuti.php");
         //require 'mongoDBconn.php';
       } else {
         echo "<div class=\"text-danger\">\nError: " . $sql . "<br></div>" . $conn->error;

@@ -1,19 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
+
+<body>
+  <?php require_once('navbar.php'); ?>
+  <div class="container">
    <?php
-     require('header.php');
-    ?>
-  
-  <body>
-<div class="container">
-   <?php
-	  include('navbar.php');
 		//include('connection.php');
 	  /* define variables and set to empty values */
-      $f1Err = $f2Err = $ff3Err = $f4Err = $f5Err = $f6Err = $f7Err = $f8Err /*= $f9Err*/ = $f10Err = $f11Err = $f12Err = "";
-      $f1 = $f2 = $f3 = $f4 = $f5 = $f6 = $f7 = $f8 /*= $f9*/ = $f10 = $f11 = $f12 =  "";
+  $f1Err = $f2Err = $ff3Err = $f4Err = $f5Err = $f6Err = $f7Err = $f8Err /*= $f9Err*/ = $f10Err = $f11Err = $f12Err = "";
+  $f1 = $f2 = $f3 = $f4 = $f5 = $f6 = $f7 = $f8 /*= $f9*/ = $f10 = $f11 = $f12 =  "";
 	$t1 = $t2 = $t3 = $t4 = $t5 = $t6 = $t7 = $t8 /*= $t9*/ = $t10 = $t11 = $t12 =  "";
-	  
+
 	$f1=$_POST['nomeLatino'];			$t1='nomeLatino';
-	$f2=$_POST['tipo'];					$t2='tipo';		
+	$f2=$_POST['tipo'];					$t2='tipo';
 	$f3=$_POST['nomeItaliano'];			$t3='nomeItaliano';
 	$f4=$_POST['classe'];				$t4='classe';
 	$f5=$_POST['annoClassif'];			$t5='annoClassif';
@@ -25,8 +27,8 @@
 	$f11=$_POST['mediaProle'];			$t11='mediaProle';
 	$f12=$_POST['nomeHabitat'];			$t12='nomeHabitat';
 	$contConvalida = 0;
-	
-	
+
+
 	if (empty($f1) || $f1 == "$t1") {
           $f1Err = "$t1" ." is required";
         } else {
@@ -50,7 +52,7 @@
         } else {
           $contConvalida++;
         }
-	
+
 		if (empty($f5) || $f5 == "$t5") {
           $f5Err = "$t5"." is required";
         } else {
@@ -62,37 +64,37 @@
         } else {
           $contConvalida++;
         }
-	
+
 		if (empty($f7) || $f7 == "$t7") {
           $f7Err = "$t7"." is required";
         } else {
           $contConvalida++;
         }
-	
+
 		if (empty($f8) || $f8 == "$t8") {
           $f8Err = "$t8"." is required";
         } else {
           $contConvalida++;
         }
-	
+
 		/*if (empty($f9) || $t9 == "$t9") {
           $f9Err = "$t9"." is required";
         } else {
           $contConvalida++;
         }*/
-        
+
 		if (empty($f10) || $f10 == "$t10") {
           $f10Err = "$t10"." is required";
         } else {
           $contConvalida++;
         }
-	
+
 		if (empty($f11) || $f11 == "$t11") {
           $f11Err = "$t11"." is required";
         } else {
           $contConvalida++;
         }
-	
+
 		if (empty($f12) || $f12 == "$t12") {
           $f12Err = "$t12"." is required";
         } else {
@@ -111,8 +113,8 @@
           echo "<div class=\"text-danger\">\nError: " . $sql . "<br></div>" . $conn->error;
         }
         $conn->close();
-			
-		
+
+
       } else {
         echo "<p class=\"text-danger\">Try again, list of errors:</p>";
         if(!empty($f1Err))
@@ -142,7 +144,7 @@
         header("refresh:3;url=./inserisciSpecieA.php");
       }
 	  ?>
-	
-	  </div>      
-	
+
+	  </div>
+
 </body>

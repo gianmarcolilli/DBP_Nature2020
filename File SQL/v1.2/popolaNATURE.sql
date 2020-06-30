@@ -21,10 +21,10 @@ insert into NATURE.habitat (nome) values
 ("colli euganei"),
 ("foresta conifere");
 
-insert into NATURE.specie(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, nomeHabitat) values
-('ibiscus','vegetale','iris','2','1932','50','www.wikipedia.it/iris','foresta conifere'),
-('cipressus','vegetale','cipresso','4','1323','32','www.wikipedia.it/cipresso','colli euganei'),
-('picchio','animale','pictorius uccellus','2','1945','23','www.wikipedia.it/picchio','foresta conifere');
+insert into NATURE.specie(nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, nomeHabitat) values
+('ibiscus','vegetale','iris','2','1932','5.0','www.wikipedia.it/iris', '120', '20', '23.2', '3.3', 'foresta conifere'),
+('cipressus','vegetale','cipresso','4','1323','3.2','www.wikipedia.it/cipresso', '93', '12', '19.4', '5.3','colli euganei'),
+('picchio','animale','pictorius uccellus','2','1945','2.1','www.wikipedia.it/picchio', '65', '5', '33.2', '2.3','foresta conifere');
 
 insert into NATURE.escursione (titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti, utenteCreatore) values
 ('gita al lago', '2012-03-12', '12:00', '18:00', 'la gita si svolgera\' con gli scarponi da montagna', '23', 'giovanni3'),

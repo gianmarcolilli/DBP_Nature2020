@@ -1,23 +1,19 @@
-<?php 
-require_once("header.php");
-require_once("navbar.php");
-?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
+
 <body>
-<?php
-  /*$operazione="visualizza pagina profilo utente: ".$_SESSION['nomeUtente'];
-  require("mongo.php");*/
-?>
-<h2 class="text-dark">Classifica delle specie con più segnalazioni</h2>
-	<div class ="row">
-      <div class = "container">
+  <?php require_once('navbar.php'); ?>
+  <div class="container-fluid">
+    <p><h2 class="text-dark"> Classifica delle specie con più segnalazioni</h2></p>
 		<a href="elencoSpecie.php"><p class="lead mb-0 text-left"><i class="fa fa-address-book"></i> Elenco specie</p></a>
-		</div>
-	</div>
-<?php
+	<?php
 	include('connection.php');
 /*$sql="select nomeLatino, tipo, nomeItaliano, classe, annoClassif, vulnerabilita, wikiLink, cmAltezza, cmDiametro, peso, mediaProle, specie.nomeHabitat from specie left join habitat on specie.nomeHabitat=habitat.nome";*/
 
-$sql="select nomeLatino, 
+$sql="select nomeLatino,
 tipo,
 nomeItaliano,
 classe,
@@ -40,11 +36,11 @@ try {
 }
 $result = $stmt->fetchAll();
 ?>
-	
-<table class="table table-striped" id="table-specie">
+<div class="container-fluid table">
+	<table class="table table-striped table-sm table-bordered table-hover" id="table-specie">
 	<thead class="thead-inverse">
 		<tr>
-			
+
 			<th>Nome Latino</th>
 			<th>Tipo</th>
 			<th>Nome Italiano</th>
@@ -58,12 +54,12 @@ $result = $stmt->fetchAll();
 			<th>Media Prole </th>
 			<th>Habitat </th>
 			<th class="dark">Numero proposte </th>
-			
+
 		</tr>
 		</thead>
-	
+
 	<?php
-foreach ($result as $row) : 
+foreach ($result as $row) :
 	$f1=$row['nomeLatino'];
 	$f2=$row['tipo'];
 	$f3=$row['nomeItaliano'];
@@ -93,15 +89,16 @@ foreach ($result as $row) :
 	  <td><?= $f11?></td>
 	  <td><?= $f12?></td>
 	  <td><?= $f13?></td>
-	  
+
 	</tr>
 	</tbody>
 	<?php
 endforeach; ?>
 
-		
-	</table>
-  
 
+</div>
+	</table>
+
+	</div>
 	</body>
 </html>

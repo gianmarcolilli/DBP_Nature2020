@@ -5,7 +5,7 @@ include('header.php');
 
 <?php
 	include('navbar.php');
-	include('mostraNomeUtenteSessione.php');?>
+	//include('connection.php');?>
 	
 	<section style="min-height: 700px; background-color: grey" >
 		<div class="container-fluid" >
@@ -16,7 +16,7 @@ include('header.php');
 				<div class="col-4">
 					<!--SELECT-->      
 	<?php
-      $sql=$conn->query("SELECT nomeUtente, email FROM UTENTE where nomeUtente!= '$nome'");
+      $sql=$conn->query("SELECT nomeUtente, email FROM UTENTE");
 					?>
 			 <select class="form-control alert-dark"  name="destinatarioMess">
 			  <option value="0">-- Seleziona un utente --</option>
@@ -57,6 +57,5 @@ include('header.php');
 			</div>
 		</div>
 	</section>
-	<?php require_once('footer.php'); ?>
 </body>
 </html>
