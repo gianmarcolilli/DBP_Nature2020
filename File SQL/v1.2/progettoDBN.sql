@@ -360,19 +360,10 @@ DELIMITER |
 CREATE PROCEDURE adesioneRF(IN nomeU VARCHAR(64), IN idRF TINYINT(4), IN importoD FLOAT, IN noteD VARCHAR(250))
 
     BEGIN
-    DECLARE cont INT DEFAULT 0;
-    /*Controllo se adesione già presente*/
-		SET cont = (
-			SELECT count(*)
-            FROM ADESIONE, RACCOLTAFONDI
-            WHERE nomeU = ADESIONE.nomeUtente
-            AND idRF = ADESIONE.id
-            AND RACCOLTAFONDI.tipo = 'APERTA');
 
-        IF cont = 0
-        THEN INSERT INTO ADESIONE(nomeUtente, id, importoD, noteD) VALUES
+ INSERT INTO ADESIONE(nomeUtente, id, importoDonazione, noteDonazione) VALUES
         (nomeU, idRF, importoD, noteD);
-        END IF;
+
     END;
 |
 DELIMITER ;
@@ -534,7 +525,7 @@ CREATE PROCEDURE updateSpecie(IN latino VARCHAR(64), IN tipoS ENUM('vegetale','a
 						FROM SPECIE
                         WHERE latino = nomeLatino)
     THEN UPDATE SPECIE
-    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = wheight, mediaProle = prole, nomeHabitat = nomeH
+    SET tipo = tipoS, nomeItaliano = italiano, classe = class, annoClassificazione = annoC , old.vulnerabilita = vulnerabilita, wikiLink = wiki, cmAltezza = altezza, cmDiametro = diametro, peso = weight, mediaProle = prole, nomeHabitat = nomeH
     WHERE latino = nomeLatino;
     END IF;
 
@@ -603,7 +594,8 @@ DELIMITER ;
 DELIMITER |
 CREATE PROCEDURE eliminaSpecie(IN nomeS VARCHAR(64))
 	BEGIN
-    SET cont = (SELECT * 
+    DECLARE cont INT DEFAULT 0;
+    SET cont = (SELECT count(*)
 						FROM SPECIE
                         WHERE nomeLatino = nomeS );
 	IF cont  > 0
