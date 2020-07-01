@@ -130,57 +130,58 @@
               Riepilogo segnalazioni
             </button>
           </h5>
-
+		  </div>
+		  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
           <p align = center>
             <?php
             $cod = $nomeU = $data = $latGPS = $lonGPS = "";
             $sql=$conn->query("
-            SELECT id, dataSegnalazione, latitudineGPS, longitudineGPS
+            SELECT id, dataSegnalazione, latitudineGPS, longitudineGPS, nomeHabitat
             FROM SEGNALAZIONE, UTENTE
             WHERE UTENTE.nomeUtente = SEGNALAZIONE.nomeUtente
             AND email = '{$_SESSION['email']}'
-            ");
-            echo "<table class=\"table-sm table-bordered table-hover\">
-            <thead>
-            <tr align=\"center\">
-            <th scope=\"col\">#</th>
-            <th scope=\"col\">cod</th>
-            <th scope=\"col\">data</th>
-            <th scope=\"col\">latitudine</th>
-            <th scope=\"col\">longitudine</th>
-            </tr>
-            </thead>
+            ");?>
+            <div class = "container">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Latitudine GPS</th>
+                        <th scope="col">Longitudine GPS</th>
+                        <th scope="col">foto</th>
+                        <th scope="col">nome Habitat</th>
+                      </tr>
+                    </thead>
             <tbody>
-            ";
+            <?php
             $count = mysqli_num_rows($sql);
             if($count > 0){
               while ($row = $sql->fetch_assoc()) {
-                unset($cod, $nomeU, $data, $latGPS, $lonGPS);
+                unset($cod, $nomeU, $data, $latGPS, $lonGPS, $nomeH);
                 $cod = $row['id'];
-                $nomeU = $row['nomeUtente'];
+                $nomeH = $row['nomeHabitat'];
                 $data = $row['dataSegnalazione'];
                 $latGPS = $row['latitudineGPS'];
-                $lonGPS = $row['longitudineGPS'];
-                echo "<tr align=\"center\">
-                <th scope=\"row\">$cod</th>
-                <td>$cod</td>
-                <td>$data</td>
-                <td>$latGPS</td>
-                <td>$lonGPS</td>
+                $lonGPS = $row['longitudineGPS'];?>
+               <tr>
+                <th scope=\"row\"><?= $cod?></th>
+                <td><?= $data?></td>
+                <td><?= $latGPS?></td>
+                <td><?= $lonGPS?></td>
+				<td><? ?></td>
+				<td><?= $nomeH?></td>
                 </tr>
-                ";
+            <?php    
               }
-              echo "</tbody>
+			}
+				?>
+              </tbody>
               </table>
-              ";
-            } else {
-              echo "</tbody>
-              </table>
-              ";
-            }
-            ?>
-
-          </div>
+		  </div>
+		</div>
+	</div>
+          
           <div class="card">
             <div class="card-header" id="headingTwo">
               <h5 class="mb-0">
@@ -190,52 +191,64 @@
               </h5>
               <p align = center>
               </div>
-              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
-                  <p align = "center">Qui è possibile trovare lo storico delle escursioni a cui hai aderito.</p>
-                </div>
-                <div class = "container">
+			  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <?php
+            $id = $titolo = $data = $oraP = $oraR = $desc = $maxP = $utCrea = "";
+			  require_once('mostraNomeUtenteSessione.php');
+            $sql=$conn->query("
+            SELECT E.id, E.titolo, E.dataEscursione, E.oraPartenza, E.oraRitorno, E.descrizione, E.maxPartecipanti, E.utenteCreatore
+            FROM ESCURSIONE as E, PARTECIPAZIONE_ESCURSIONE as P
+            WHERE P.utentePartecipante = '$nome' AND P.idESC = E.id     
+            ");?>
+            <div class = "container">
                   <table class="table table-hover">
                     <thead>
                       <tr>
                         <th scope="col">id</th>
                         <th scope="col">Titolo</th>
                         <th scope="col">Data</th>
-                        <th scope="col">Partenza</th>
-                        <th scope="col">Ritorno</th>
+                        <th scope="col">Ora partenza</th>
+                        <th scope="col">Ora ritorno</th>
                         <th scope="col">Descrizione</th>
+						<th scope="col">Max partecipanti</th>
+						<th scope="col">Utente organizzatore</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">*</th>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">*</th>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">*</th>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                        <td>*</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <tbody>
+            <?php
+            $count = mysqli_num_rows($sql);
+            if($count > 0){
+              while ($row = $sql->fetch_assoc()) {
+                unset($id, $titolo, $data,  $oraR, $oraP, $desc, $maxP, $utCrea);
+                $id = $row['id'];
+                $titolo = $row['titolo'];
+                $data = $row['dataEscursione'];
+                $oraP = $row['oraPartenza'];
+                $oraR = $row['oraRitorno'];
+				$desc = $row['descrizione'];
+				$maxP = $row['maxPartecipanti'];
+				$utCrea = $row['utenteCreatore'];?>
+               <tr>
+                <th scope=\"row\"><?= $id?></th>
+                <td><?= $titolo?></td>
+                <td><?= $data?></td>
+                <td><?= $oraP?></td>
+				<td><?= $oraR ?></td>
+				<td><?= $desc?></td>
+				<td><?= $maxP?></td>
+				<td><?= $utCrea?></td>
+                </tr>
+            <?php    
+              }
+			}
+				?>
+              </tbody>
+              </table>
+				  </div>
+			  </div>
+		  
+              
+           
             <div class="card">
               <div class="card-header" id="headingThree">
                 <h5 class="mb-0">
@@ -244,61 +257,52 @@
                   </button>
                 </h5>
               </div>
-              <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                <div class="card-body">
-                  <p align = "center">Qui è possibile trovare lo storico delle donazioni effettuato a raccolte fondi.</p>
-                </div>
-                <div class = "container">
-                  <?php
-                  $id = $nomeU = $importoD = $noteD = "";
-                  $sql=$conn->query("
-                  SELECT id, nomeUtente, importoDonazione, noteDonazione
-                  FROM adesione
-                  WHERE UTENTE.nomeUtente = ADESIONE.nomeUtente
-                  ");
-                  echo "<table class=\"table-sm table-bordered table-hover\">
-                  <thead>
-                  <tr align=\"center\">
-
-                  <th scope=\"col\">id</th>
-                  <th scope=\"col\">nome Utente</th>
-                  <th scope=\"col\">importo donazione</th>
-                  <th scope=\"col\">note donazione</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  ";
-                  $count = mysqli_num_rows($sql);
-                  if($count > 0){
-                    while ($row = $sql->fetch_assoc()) {
-                      unset($id, $nomeU, $importD, $noteD);
-                      $id = $row['id'];
-                      $nomeU = $row['nomeUtente'];
-                      $importoD = $row['importoDonazione'];
-                      $noteD = $row['noteDonazione'];
-
-                      echo "<tr align=\"center\">
-
-                      <td>$id</td>
-                      <td>$nomeU</td>
-                      <td>$importoD</td>
-                      <td>$noteD</td>
+              
+                 <?php
+           
+			  require_once('mostraNomeUtenteSessione.php');
+            $sql=$conn->query("
+            SELECT ADESIONE.id, ADESIONE.importoDonazione, ADESIONE.noteDonazione, RACCOLTAFONDI.descrizione
+            FROM ADESIONE, RACCOLTAFONDI
+            WHERE ADESIONE.nomeUtente = '$nome' AND ADESIONE.id = RACCOLTAFONDI.id     
+            ");?>
+            <div class = "container">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Descrizione</th>
+                        <th scope="col">Importo Donazione</th>
+                        <th scope="col">Note donazione</th>
                       </tr>
-                      ";
-                    }
-                    echo "</tbody>
-                    </table>
-                    ";
-                  } else {
-                    echo "</tbody>
-                    </table>
-                    ";
-                  }
-                  ?>
+                    </thead>
+            <tbody>
+            <?php
+            $count = mysqli_num_rows($sql);
+            if($count > 0){
+              while ($row = $sql->fetch_assoc()) {
+                unset($id, $desc, $importo, $note);
+                $id = $row['id'];
+                $desc = $row['descrizione'];
+                $importo = $row['importoDonazione'];
+                $note = $row['noteDonazione'];
+				?>
+               <tr>
+                <th scope=\"row\"><?= $id?></th>
+                <td><?= $desc?></td>
+                <td><?= $importo?></td>
+                <td><?= $note?></td>
+                </tr>
+            <?php    
+              }
+			}
+				?>
+              </tbody>
+              </table>
                 </div>
               </div>
             </div>
-          </div>
+	</div>
 
           <!-- Bootstrap core JavaScript -->
           <script src="vendor/jquery/jquery.min.js"></script>
