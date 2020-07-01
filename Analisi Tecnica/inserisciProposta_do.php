@@ -6,7 +6,7 @@
 <div class="container">
    <?php
 	  include('navbar.php');
-	
+
 
   require_once('mostraNomeUtenteSessione.php');
 	  /* define variables and set to empty values */
@@ -46,19 +46,19 @@
         } else {
           $contConvalida++;
         }
-		   
-  		
+
+
 
         if($contConvalida == 4){
           echo "<div class=\"text-success\">\n I campi sono stati compilati correttamente.</div>";
-          $sql = "CALL AggiungiPropostaS('$f1', '$f2', '$f3', CURDATE(), '$f4')";
+          $sql = "CALL AggiungiPropostaS('$f1', '$f2', '$f3', '$f4')";
         if ($conn->query($sql) == TRUE) {
           echo "<div class=\"text-success\"><br>La proposta è stata inserita correttamente.</div>";
           //require 'mongoDBconn.php';
-          header("refresh:3;url=./elencoProposteClassif.php");
+          header("refresh:3;url=./elencoSegnalazioni.php");
         } else {
           echo "<div class=\"text-danger\">\nError: " . $sql . "<br></div>" . $conn->error;
-			header("refresh:3;url=./inserisciProposta.php");
+			header("refresh:3;url=./elencoSegnalazioni.php");
         }
         $conn->close();
 
@@ -73,8 +73,8 @@
         echo "<br>" . $f3Err;
         if(!empty($f4Err))
         echo "<br>" . $f4Err;
-       
-        header("refresh:3;url=./inserisciProposta.php");
+
+        header("refresh:3;url=./elencoSegnalazioni.php");
       }
 	  ?>
 

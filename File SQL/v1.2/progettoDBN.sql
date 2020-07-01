@@ -300,7 +300,7 @@ CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(
 DELIMITER ;
 
 DELIMITER |
-CREATE PROCEDURE AggiungiPropostaS(IN idSegnalazione TINYINT(4), IN nomeU VARCHAR(64),IN commento VARCHAR(200), IN specie VARCHAR(64))
+CREATE PROCEDURE AggiungiPropostaS(IN idSegnalazione TINYINT(4), IN nomeU VARCHAR(64),IN commento VARCHAR(200), IN nomeSpecie VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
 
