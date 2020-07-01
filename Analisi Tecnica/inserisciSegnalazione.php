@@ -19,7 +19,7 @@
     <h3 align="center">Inserisci nuova segnalazione d'avvistamento</h3>
     <div class ="row">
       <div class = "container">
-        <form action="inserisciSegnalazione_do.php" method="post">
+        <form action="inserisciSegnalazione_do.php" method="post" id="formSegnalazione">
           <div class="form-row">
 			  
             <!--<div class="form-group col-4">
@@ -42,20 +42,7 @@
 							endforeach;
 							$id=$f1+1; */
 				?>
-              <input type="hidden" class="form-control" name="id" value="<?//= $id ?>" readonly>
-            </div>-->
-			  <!--<div class="form-group col-4">
-			  </div>
-			   <div class="form-group col-8">
-              <label for="insert">Nome utente</label>
-				  
-              <input type="text" class="form-control" name="nomeUtente" value="" readonly>
-            </div>
-			  
-            <div class="form-group col-4">
-              <label for="insert">Data </label>
-				<input type="date" class="form-control" name="dataSegnalazione" placeholder="Inserisci la data ">
-            </div>-->
+            -->
 			  <div class="form-group col-6">
               <label for=""> Latitudine GPS</label>
               <input type="text" class="form-control" name="latitudine" placeholder="Inserire la latitudine in formato numerico classico">
@@ -64,13 +51,10 @@
               <label for=""> Longitudine GPS</label>
               <input type="text" class="form-control" name="longitudine" placeholder="Inserire la longitudine in formato numerico classico">
             </div>
-			  <!--<div class="form-group col-12">
-              <label for=""> Foto della segnalazione</label>
-              <input type="text" class="form-control" name="foto" placeholder="*">
-            </div>-->
+			  
 			  <div class="form-group col-6">
               <label for=""> Habitat </label>
-              <!--<input type="text" class="form-control" id="updateHabitat" placeholder="Habitat"> -->
+              
 				<!--SELECT-->      
 	<?php
 	
@@ -92,13 +76,23 @@
      </select>
 	<!-- FINE SELECT-->
 			</div>
-			 
+			 </form>
+			<div class="form-group col-12">
+				  <label for=""> Foto della segnalazione</label>
+				  <form action="upload.php" method="post" enctype="multipart/form-data">
+					  Seleziona l'immagine da caricare:
+					  	<input type="file" name="fileToUpload" id="fileToUpload">
+  						<input type="submit" value="Upload Image" name="submit">
+				  </form>
+              
+              
+            </div>
 
 	<div class="form-group col-12">
-                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-arrow-right"></i> Inserisci nuova segnalazione  </button>
+                    <button type="submit" class="btn btn-success btn-block" form="formSegnalazione"><i class="fa fa-arrow-right"></i> Inserisci nuova segnalazione  </button>
                   </div>
 			  </div>
-		</form>
+		
 		
 	  </div>
 	  </div>

@@ -29,7 +29,7 @@
 
           <div class="form-group col-3">
             <label for="insert">ID segnalazione di riferimento</label>
-            <input type="text" class="form-control-plaintext text-uppercase" name="idS" value=<?php echo $_POST['idSegnalazione']; ?> readonly>
+            <input type="text" class="form-control-plaintext text-uppercase" name="idS" value="<?php echo $_POST['idSegnalazione']; ?>" readonly>
           </div>
 
           <div class="form-group col-9">

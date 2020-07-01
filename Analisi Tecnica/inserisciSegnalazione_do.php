@@ -7,16 +7,19 @@
    <?php
 	  include('navbar.php');
 		//include('connection.php');
-	  require_once('mostraNomeUtenteSessione.php');
+	require_once('mostraNomeUtenteSessione.php');
+	
 	  /* define variables and set to empty values */
       $f1Err = $f2Err = $f3Err = $f4Err = $f5Err = $f6Err = "";
-      $f1 = $f2 = $f3 = $f4 = $f5 = $f6 =   "";
+      $f1 = $f2 = $f3 = $f4 = $f5 = $f6 = $foto=  "";
 	$t1 = $t2 = $t3 = $t4 = $t5 = $t6 =   "";
 	  
 	$f1=$nome;							$t1='nome utente';
 	$f2=$_POST['latitudine'];			$t2='Latitudine GPS';		
 	$f3=$_POST['longitudine'];			$t3='Longitudine GPS';
 	$f4=$_POST['nomeHabitat'];			$t4='Habitat';
+	$foto=$nomefoto;
+	//$foto=$_POST['fileToUpload'];
 	//$f5=$_POST['annoClassif'];		$t5='annoClassif'; DATA è IN CURDATE
 	//$f6=$_POST['vulnerabilita'];		$t6='vulnerabilita'; PER FOTO
 
@@ -63,7 +66,7 @@
 
         if($contConvalida == 4){
           echo "<div class=\"text-success\">\n I campi sono stati compilati correttamente.</div>";
-          $sql = "CALL aggiungiSegnalazioneU('$f1', CURDATE(), '$f2', '$f3', '$f4')";
+          $sql = "CALL aggiungiSegnalazioneU('$f1', '$f2', '$f3', '$foto', '$f4')";
 			echo $sql;
         if ($conn->query($sql) == TRUE) {
           echo "<div class=\"text-success\"><br>La segnalazione d'avvistamento è stata inserita correttamente.</div>";

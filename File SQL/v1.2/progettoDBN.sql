@@ -71,7 +71,7 @@ CREATE TABLE SEGNALAZIONE(
     dataSegnalazione DATE,
     latitudineGPS INT,
     longitudineGPS INT,
-    foto LONGBLOB,
+    foto VARCHAR(250),
 	nomeHabitat VARCHAR(64),
     FOREIGN KEY(nomeHabitat) REFERENCES HABITAT(nome) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE CASCADE ON UPDATE CASCADE
@@ -106,12 +106,12 @@ CREATE TABLE GESTIONES(
 /* Creazione pulita della tabella GESTIONEH */
 DROP TABLE IF EXISTS GESTIONEH;
 CREATE TABLE GESTIONEH(
-	nomeH VARCHAR(64),
-    nomeUtente VARCHAR(64),
+	nomeHa VARCHAR(64),
+    nomeAmm VARCHAR(64),
     tipoOperazione VARCHAR (16) NOT NULL,
-    PRIMARY KEY(nomeH, nomeUtente),
-    FOREIGN KEY (nomeH) REFERENCES HABITAT(nome) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (nomeUtente) REFERENCES UTENTE(nomeUtente) ON DELETE NO ACTION ON UPDATE NO ACTION
+    PRIMARY KEY(nomeHa, nomeAmm),
+    FOREIGN KEY (nomeHa) REFERENCES HABITAT(nome) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (nomeAmm) REFERENCES UTENTE(nomeUtente) ON DELETE NO ACTION ON UPDATE NO ACTION
 )engine = InnoDB;
 
 /* Creazione pulita della tabella ESCURSIONE */
@@ -276,7 +276,7 @@ DELIMITER ;
 
 /*Inserimento segnalazione*/
 DELIMITER |
-CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(11), IN longitudineS INT(11))
+CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(11), IN longitudineS INT(11),IN fotoS VARCHAR(250), IN nomeH VARCHAR(64))
 	BEGIN
     DECLARE cont INT DEFAULT 0;
 
@@ -285,14 +285,14 @@ CREATE PROCEDURE AggiungiSegnalazioneU(IN nomeU VARCHAR(64), IN latitudineS INT(
 			SELECT COUNT(*) AS existsSegn
 			FROM SEGNALAZIONE
 			WHERE nomeU = nomeUtente
-            AND latitudineS = latitudine
-            AND longitudineS = longitudine
+            AND latitudineS = latitudineGPS
+            AND longitudineS = longitudineGPS
     );
 
     IF cont < 1
     THEN
-		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudineGPS, longitudineGPS) VALUES
-        (nomeU, CURDATE(), latitudineS, longitudineS);
+		INSERT INTO SEGNALAZIONE(nomeUtente, dataSegnalazione, latitudineGPS, longitudineGPS, foto, nomeHabitat) VALUES
+        (nomeU, CURDATE(), latitudineS, longitudineS, fotoS, nomeH);
     END IF;
 
 	END;
@@ -541,7 +541,7 @@ CREATE PROCEDURE inserisciGestioneH(IN nomeHab VARCHAR(64), IN nomeUt VARCHAR(64
         WHERE  nomeHab = nomeH);
 
     IF cont = 0
-    THEN */ INSERT INTO GESTIONEH(nomeH, nomeUtente, tipoOperazione)
+    THEN */ INSERT INTO GESTIONEH(nomeHa, nomeAmm, tipoOperazione)
     VALUE (nomeHab, nomeUt, tipoop);
 	/*END IF;*/
 	
