@@ -15,9 +15,9 @@ insert into NATURE.utente (nomeUtente, tipo, psw, email, annoNascita, dataRegist
 ('bobo43', 'amministratore', 'bobo','bobo43@gmail.com','1987','2019-03-12','operaio','1','3','4','2','1');
 
 insert into NATURE.habitat (nome) values
-("habitat dell'uccello"),
+("habitat dell\'uccello"),
 ("habitat del leone"),
-("habitat dell'iris"),
+("habitat dell\'iris"),
 ("colli euganei"),
 ("foresta conifere");
 
@@ -27,19 +27,21 @@ insert into NATURE.specie(nomeLatino, tipo, nomeItaliano, classe, annoClassif, v
 ('picchio','animale','pictorius uccellus','2','1945','2.1','www.wikipedia.it/picchio', '65', '5', '33.2', '2.3','foresta conifere');
 
 insert into NATURE.escursione (titolo, dataEscursione, oraPartenza, oraRitorno, descrizione, maxPartecipanti, utenteCreatore) values
-('gita al lago', '2012-03-12', '12:00', '18:00', 'la gita si svolgera\' con gli scarponi da montagna', '23', 'giovanni3'),
-('gita al mare', '2012-03-10', '13:00', '20:00', 'la gita si svolgera\' con il costume da mare', '10', 'giovanni3'),
-('gita in laguna', '2012-07-13', '10:00', '18:00', 'la gita si svolgera\' sul delta del po', '25', 'giovanni3');
+('gita al lago', '2012-03-12', '12:00', '18:00', 'la gita si svolgera\' con gli scarponi da montagna', '23', 'gian'),
+('gita al mare', '2012-03-10', '13:00', '20:00', 'la gita si svolgera\' con il costume da mare', '10', 'mike32'),
+('gita in laguna', '2012-07-13', '10:00', '18:00', 'la gita si svolgera\' sul delta del po', '25', 'mike32');
 
 #insert into NATURE.messaggio (nomeUtenteMittente, nomeUtenteDestinatario, titolo, testo) values
 #('mike32', 'giovanni3', 'saluti', 'ciao gio ti saluto'),
 #( 'giovanni3','mike32', 'ringraziamenti', 'ciao mike ti ringrazio');
 
-insert into NATURE.segnalazione (nomeUtente,dataSegnalazione,latitudineGPS,longitudineGPS) values
-('mike32','2020-03-20','90','75'),
-('mike32','2020-01-25','50','25'),
-('bobo43','2020-02-28','94','55'),
-('giovanni3','2020-02-20','90','75');
+insert into NATURE.segnalazione (nomeUtente,dataSegnalazione,latitudineGPS,longitudineGPS,foto,nomeHabitat) values
+('mike32','2020-03-20','90','75','','habitat dell\'uccello'),
+('mike32','2020-01-25','50','25','','habitat del leone'),
+('bobo43','2020-02-28','94','55','','foresta conifere'),
+('gian','2013-01-02','54','23','','habitat dell\'uccello'),
+('gian','2010-05-18','33','65','','habitat del leone'),
+('giovanni3','2020-02-20','90','75','','foresta conifere');
 
 insert into NATURE.proposta (id2,commento) values
 ('1','proposta numero 1'),
@@ -50,5 +52,12 @@ insert into NATURE.adesione values
 ('1', 'mike32', '1200', 'ok'),
 ('2', 'gian', '1200', 'ok'),
 ('2', 'bobo43', '1400', 'ok');
+
+insert into NATURE.partecipazione_escursione values
+('gian', 'mike32', '1'),
+('mike32', 'gian', '2'),
+('mike32', 'gian', '1'),
+('bobo43', 'gian', '3'),
+('mike32', 'bobo43', '3');
 
 
