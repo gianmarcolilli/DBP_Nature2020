@@ -1,11 +1,13 @@
-<?php
-require_once('header.php');
-require_once('navbar.php');
-?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
 
 <body>
-  <?php
-  include('connection.php');
+   <?php
+   include('navbar.php');
+   include('connection.php');
   $sql= "select id,
   nomeUtente,
   dataSegnalazione,
@@ -22,6 +24,7 @@ require_once('navbar.php');
   $result = $stmt->fetchAll();
 
   ?>
+  <div class="container-fluid">
   <h2 class="text-dark"> Elenco delle segnalazioni</h2>
   <?php
   foreach ($result as $row) :
@@ -89,5 +92,6 @@ require_once('navbar.php');
     </section>
     <?php
   endforeach; ?>
+</div>
 </body>
 </html>

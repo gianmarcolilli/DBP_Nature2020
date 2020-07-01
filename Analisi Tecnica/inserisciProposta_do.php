@@ -1,13 +1,14 @@
-   <?php
-     require_once('header.php');
-    ?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
 
   <body>
+     <?php include('navbar.php'); ?>
 <div class="container">
+
    <?php
-	  include('navbar.php');
-
-
   require_once('mostraNomeUtenteSessione.php');
 	  /* define variables and set to empty values */
       	$f1Err = $f2Err = $f3Err = $f4Err =  "";

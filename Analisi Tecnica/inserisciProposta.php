@@ -1,6 +1,8 @@
-<?php
-require_once('header.php');
-?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- import scripts, css, user session -->
+<?php include('header.php'); ?>
 
 <body>
 
